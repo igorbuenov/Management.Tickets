@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\shared\Tickets.Exceptions\Tickets.Exceptions.csproj" />
+    <ProjectReference Include="..\Tickets.Domain\Tickets.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UseCases\Users\GetUsers\" />
+    <Folder Include="UseCases\Users\GetUserById\" />
+    <Folder Include="UseCases\Users\DeleteUser\" />
+    <Folder Include="UseCases\Users\LoginUser\" />
+    <Folder Include="UseCases\Users\ChangePassword\" />
+    <Folder Include="UseCases\Users\UpdateUser\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.14" />
+  </ItemGroup>
+
+</Project>
