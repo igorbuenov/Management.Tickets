@@ -1,8 +1,9 @@
 ﻿using Tickets.Application.DTOs.Users;
+using Tickets.Application.Interfaces;
 using Tickets.Application.Services.Interfaces;
+using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Exceptions.ExceptionBase;
-using Tickets.Domain.Entities;
 
 namespace Tickets.Application.UseCases.Users.CreateUser
 {
@@ -13,14 +14,16 @@ namespace Tickets.Application.UseCases.Users.CreateUser
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IPasswordService _passwordService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUserService _currentUserService;
 
-        public CreateUserUseCase(IUserRepository userRepository, IPasswordService passwordService, IPasswordRepository passwordRepository, IUnitOfWork unitOfWork, IUserRoleRepository userRoleRepository)
+        public CreateUserUseCase(IUserRepository userRepository, IPasswordService passwordService, IPasswordRepository passwordRepository, IUnitOfWork unitOfWork, IUserRoleRepository userRoleRepository, ICurrentUserService currentUserService)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
             _passwordRepository = passwordRepository;
             _unitOfWork = unitOfWork;
             _userRoleRepository = userRoleRepository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<int> Execute(CreateUserDto request)
@@ -30,10 +33,13 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             await ValidateRequestAsync(request);
 
             //TODO: Mapear a request em uma entidade de usuário
+            var currentUserId = _currentUserService.UserId;
+
             User user = new User
             {
                 Name = request.Name,
                 Email = request.Email,
+                CreatedByUserId = currentUserId,
             };
 
             //TODO: Salvar o usuário no banco de dados utilizando o repositório de usuários

@@ -51,6 +51,7 @@ builder.Services
         };
     });
 
+builder.Services.AddHttpContextAccessor();
 
 // AutoMapper
 builder.Services.AddAutoMapper(cfg => { }, typeof(UserProfile));

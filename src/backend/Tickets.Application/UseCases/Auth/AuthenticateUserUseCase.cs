@@ -39,8 +39,7 @@ namespace Tickets.Application.UseCases.Auth
 
             return new LoginResponseDto
             {
-                AccessToken = token,
-                ExpiresIn = 3600
+                AccessToken = token
             };
 
         }
