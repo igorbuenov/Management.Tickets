@@ -6,5 +6,6 @@ namespace Tickets.Domain.Interfaces.Repositories
     {
         Task Add(int roleID, User user);
         Task<Role> GetRoleByID(int id);
+        Task<IEnumerable<Role>> GetRolesByUserId(int userId);
     }
 }

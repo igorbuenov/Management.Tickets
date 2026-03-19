@@ -24,6 +24,13 @@ namespace Tickets.WebAPI.Filters
 
                 context.HttpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
                 context.Result = new BadRequestObjectResult(exception.ErrorMessages);
+            } 
+            else if (context.Exception is AuthValidationException)
+            {
+                var exception = context.Exception as AuthValidationException;
+
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Result = new BadRequestObjectResult(exception.errorMessage);
             }
         }
 

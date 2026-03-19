@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.UseCases.Users.CreateUser;
@@ -23,6 +24,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestModel request)
         {

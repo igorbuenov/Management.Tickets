@@ -6,5 +6,6 @@ namespace Tickets.Domain.Interfaces.Repositories
     {
         Task<User> Add(User user);
         Task<bool> ExistActiveUserWithEmail(string email);
+        Task<User> GetByEmail(string email);
     }
 }

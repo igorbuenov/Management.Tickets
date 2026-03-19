@@ -26,5 +26,13 @@ namespace Tickets.Infrastructure.Repositories
         {
             return await _context.Roles.FirstOrDefaultAsync(role => role.Id == id);
         }
+
+        public async Task<IEnumerable<Role>> GetRolesByUserId(int userId)
+        {
+            return await _context.UserRoles
+                .Where(userRole => userRole.User.Id == userId)
+                .Select(userRole => userRole.Role)
+                .ToListAsync();
+        }
     }
 }

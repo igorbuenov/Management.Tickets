@@ -1,4 +1,5 @@
-﻿using Tickets.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Infrastructure.Data;
 
@@ -15,6 +16,11 @@ namespace Tickets.Infrastructure.Repositories
         public async Task Add(UserPassword userPassword)
         {
             await _context.UserPasswords.AddAsync(userPassword);
+        }
+
+        public async Task<UserPassword> GetByUserId(int userId)
+        {
+            return await _context.UserPasswords.FirstOrDefaultAsync(x => x.UserId == userId);
         }
     }
 }

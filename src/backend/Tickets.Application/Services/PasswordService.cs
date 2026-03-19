@@ -63,6 +63,12 @@ namespace Tickets.Application.Services
             return sb.ToString();
         }
 
+        public bool VerifyPassword(string password, string hashPassword)
+        {
+            var encryptedPassword = EncryptPassword(password);
+            return encryptedPassword == hashPassword;
+        }
+
 
 
     }
