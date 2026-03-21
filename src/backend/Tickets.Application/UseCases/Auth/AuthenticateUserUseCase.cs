@@ -1,4 +1,5 @@
-﻿using Tickets.Application.DTOs.Auth;
+﻿using Microsoft.Extensions.Logging;
+using Tickets.Application.DTOs.Auth;
 using Tickets.Application.Services.Interfaces;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
@@ -6,7 +7,6 @@ using Tickets.Exceptions.ExceptionBase;
 
 namespace Tickets.Application.UseCases.Auth
 {
-    // Ensure the class implements the interface
     public class AuthenticateUserUseCase : IAuthenticateUserUseCase
     {
         private readonly IUserRepository _userRepository;
@@ -14,64 +14,92 @@ namespace Tickets.Application.UseCases.Auth
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IPasswordService _passwordService;
         private readonly IJwtService _jwtService;
+        private readonly ILogger<AuthenticateUserUseCase> _logger;
 
         public AuthenticateUserUseCase(
             IUserRepository userRepository,
             IPasswordRepository passwordRepository,
             IUserRoleRepository userRoleRepository,
             IPasswordService passwordService,
-            IJwtService jwtService)
+            IJwtService jwtService,
+            ILogger<AuthenticateUserUseCase> logger)
         {
             _userRepository = userRepository;
             _passwordRepository = passwordRepository;
             _userRoleRepository = userRoleRepository;
             _passwordService = passwordService;
             _jwtService = jwtService;
+            _logger = logger;
         }
 
         public async Task<LoginResponseDto> Execute(LoginRequestDto request)
         {
-            var user = await ValidateRequest(request);
+            _logger.LogInformation("Login attempt for {Email}", request.Email);
+
+            ValidateRequest(request);
+
+            var user = await ValidateCredentials(request);
 
             var roles = await _userRoleRepository.GetRolesByUserId(user.Id);
 
-            var token = _jwtService.GenerateToken(user.Id ,user.Email, roles);
+            var token = _jwtService.GenerateToken(user.Id, user.Email, roles);
+
+            _logger.LogInformation(
+                "User {UserId} authenticated successfully with roles {Roles}",
+                user.Id,
+                string.Join(",", roles));
 
             return new LoginResponseDto
             {
                 AccessToken = token
             };
+        }
+
+        private void ValidateRequest(LoginRequestDto request)
+        {
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+            {
+                _logger.LogWarning("Login validation failed: Email or Password not provided");
+                throw new AuthValidationException("Email and Password are required");
+            }
 
         }
 
-        private async Task<User> ValidateRequest(LoginRequestDto request)
+        private async Task<User> ValidateCredentials(LoginRequestDto request)
         {
-            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                throw new AuthValidationException("Email and Password are required");
-
             var user = await _userRepository.GetByEmail(request.Email);
             if (user == null)
             {
+                _logger.LogWarning("Login failed for {Email}: User not found", request.Email);
+
                 /*
                     Validação fake para igualar o tempo de resposta,
                     evitando ataques de timing attack para descobrir se um email existe ou não no sistema.
-                 */
+                */
                 _passwordService.VerifyPassword(request.Password, "fake_hash_to_equalize_timing");
+
                 throw new AuthValidationException("Invalid Credentials");
             }
 
             if (!user.IsActive)
+            {
+                _logger.LogWarning("Login failed for {Email}: User is inactive", request.Email);
                 throw new AuthValidationException("Invalid Credentials");
+            }
 
             var password = await _passwordRepository.GetByUserId(user.Id);
-            bool validPassword = _passwordService.VerifyPassword(request.Password, password.HashPassword);
-            if (!validPassword)
-                throw new AuthValidationException("Invalid Credentials");
 
-            
+            bool validPassword = _passwordService.VerifyPassword(request.Password, password.HashPassword);
+
+            if (!validPassword)
+            {
+                _logger.LogWarning("Login failed for {Email}: Invalid password", request.Email);
+                throw new AuthValidationException("Invalid Credentials");
+            }
+
+            _logger.LogInformation("Credentials validated for user {UserId}", user.Id);
 
             return user;
         }
-
     }
 }
