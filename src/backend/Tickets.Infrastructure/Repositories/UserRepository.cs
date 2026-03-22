@@ -24,6 +24,11 @@ namespace Tickets.Infrastructure.Repositories
             return await _context.Users.AnyAsync(u => u.Email == email && u.IsActive);
         }
 
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
         public async Task<User> GetByEmail(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);

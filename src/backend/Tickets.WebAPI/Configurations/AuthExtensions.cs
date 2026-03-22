@@ -1,7 +1,8 @@
-﻿using System.Text;
-using Tickets.Infrastructure.Security;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
+using Tickets.Infrastructure.Security;
 
 namespace Tickets.WebAPI.Configuration;
 
@@ -33,7 +34,9 @@ public static class AuthenticationExtensions
 
                     ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+
+                    //RoleClaimType = ClaimTypes.Role
                 };
             });
 

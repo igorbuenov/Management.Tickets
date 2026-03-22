@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.UseCases.Users.CreateUser;
+using Tickets.Application.UseCases.Users.GetUsers;
 using Tickets.WebAPI.Models.Users.Request;
 using Tickets.WebAPI.Models.Users.Response;
 
@@ -16,11 +17,13 @@ namespace Tickets.WebAPI.Controllers
 
         private readonly IMapper _mapper;
         private readonly ICreateUserUseCase _createUserUseCase;
+        private readonly IGetUsersUseCase _getUsersUseCase;
 
-        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase)
+        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase)
         {
             _mapper = mapper;
             _createUserUseCase = createUserUseCase;
+            _getUsersUseCase = getUsersUseCase;
         }
 
 
@@ -34,6 +37,14 @@ namespace Tickets.WebAPI.Controllers
             var response = _mapper.Map<CreateUserResponseModel>(await _createUserUseCase.Execute(createUserDto));
 
             return Created(string.Empty, response);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _getUsersUseCase.Execute();
+            return Ok(users);
         }
 
 
