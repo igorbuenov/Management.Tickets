@@ -1,4 +1,4 @@
-﻿namespace Tickets.WebAPI.Models.RequestModels.Users.Response
+﻿namespace Tickets.WebAPI.Models.Users.Response
 {
     public class CreateUserResponseModel
     {

@@ -1,8 +1,8 @@
-﻿using Tickets.Domain.Entities;
+﻿using Tickets.Application.DTOs.Auth;
 
-namespace Tickets.Application.DTOs.Auth
+namespace Tickets.WebAPI.Models.Auth.Response
 {
-    public class LoginResponseDto
+    public class LoginResponseModel
     {
         public string AccessToken { get; set; }
         public DateTime ExpiresAt { get; set; }

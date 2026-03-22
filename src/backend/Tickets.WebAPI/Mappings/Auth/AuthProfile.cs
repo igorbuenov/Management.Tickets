@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Tickets.Application.DTOs.Auth;
-using Tickets.WebAPI.Models.RequestModels.Auth.Request;
+using Tickets.WebAPI.Models.Auth.Request;
+using Tickets.WebAPI.Models.Auth.Response;
 
 namespace Tickets.WebAPI.Mappings.Auth
 {
@@ -9,6 +10,7 @@ namespace Tickets.WebAPI.Mappings.Auth
         public AuthProfile()
         {
             CreateMap<LoginRequestModel, LoginRequestDto>();
+            CreateMap<LoginResponseDto, LoginResponseModel>();
         }
     }
 }

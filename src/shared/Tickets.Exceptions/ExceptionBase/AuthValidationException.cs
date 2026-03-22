@@ -2,11 +2,16 @@
 {
     public class AuthValidationException : TicketsException
     {
-        public string errorMessage { get; set; }
+        public List<string> Errors { get; set; } = new List<string>();
 
         public AuthValidationException(string message)
         {
-            errorMessage = message;
+            Errors.Add(message);
+        }
+
+        public AuthValidationException(List<string> messages)
+        {
+            Errors = messages;
         }
     }
 }

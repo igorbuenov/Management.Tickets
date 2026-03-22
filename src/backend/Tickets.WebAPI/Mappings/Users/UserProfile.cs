@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Tickets.Application.DTOs.Users;
-using Tickets.WebAPI.Models.RequestModels.Users.Request;
+using Tickets.WebAPI.Models.Users.Request;
 
 namespace Tickets.WebAPI.Mappings.Users
 {

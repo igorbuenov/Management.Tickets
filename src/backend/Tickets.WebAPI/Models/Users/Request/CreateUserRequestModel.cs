@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Tickets.WebAPI.Models.RequestModels.Users.Request
+namespace Tickets.WebAPI.Models.Users.Request
 {
     public class CreateUserRequestModel
     {

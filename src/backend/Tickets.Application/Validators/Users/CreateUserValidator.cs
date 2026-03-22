@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Tickets.Application.DTOs.Users;
 
-namespace Tickets.Application.UseCases.Users.CreateUser
+namespace Tickets.Application.Validators.Users
 {
     public class CreateUserValidator : AbstractValidator<CreateUserDto> 
     {

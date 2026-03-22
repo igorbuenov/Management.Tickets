@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Tickets.Application.DTOs.Auth;
 using Tickets.Application.Services.Interfaces;
 using Tickets.Domain.Entities;
 
@@ -18,7 +19,7 @@ namespace Tickets.Infrastructure.Security
             _settings = settings.Value;
         }
 
-        public string GenerateToken(int userId, string email, IEnumerable<Role> roles)
+        public JsonTokenResultDto GenerateToken(int userId, string email, IEnumerable<Role> roles)
         {
             var claims = new List<Claim>
             {
@@ -35,14 +36,20 @@ namespace Tickets.Infrastructure.Security
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            var expiresAt = DateTime.UtcNow.AddMinutes(_settings.ExpirationMinutes);
+
             var token = new JwtSecurityToken(
                 issuer: _settings.Issuer,
                 audience: _settings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_settings.ExpirationMinutes),
+                expires: expiresAt,
                 signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new JsonTokenResultDto
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                ExpiresAt = expiresAt
+            };
         }
     }
 }

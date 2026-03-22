@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Auth;
 using Tickets.Application.UseCases.Auth;
-using Tickets.WebAPI.Models.RequestModels.Auth.Request;
+using Tickets.WebAPI.Models.Auth.Request;
+using Tickets.WebAPI.Models.Auth.Response;
 
 namespace Tickets.WebAPI.Controllers
 {
@@ -20,13 +21,14 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(typeof(LoginResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(LoginResponseModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login(LoginRequestModel request)
         {
-            var response = await _authenticateUserUseCase.Execute(_mapper.Map<LoginRequestDto>(request));
+            var responseDto = await _authenticateUserUseCase.Execute(_mapper.Map<LoginRequestDto>(request));
+            var responseModel = _mapper.Map<LoginResponseModel>(responseDto);
 
-            return Ok(response);
+            return Ok(responseModel);
         }
     }
 }

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.UseCases.Users.CreateUser;
-using Tickets.WebAPI.Models.RequestModels.Users.Request;
-using Tickets.WebAPI.Models.RequestModels.Users.Response;
+using Tickets.WebAPI.Models.Users.Request;
+using Tickets.WebAPI.Models.Users.Response;
 
 
 namespace Tickets.WebAPI.Controllers

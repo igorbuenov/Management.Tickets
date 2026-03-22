@@ -2,11 +2,11 @@
 {
     public class ErrorOnValidationException : TicketsException
     {
-        public IList<string> ErrorMessages { get; set; }
+        public List<string> Errors { get; set; } = new List<string>();
 
-        public ErrorOnValidationException(IList<string> errorMessages)
+        public ErrorOnValidationException(List<string> errorMessages)
         {
-            ErrorMessages = errorMessages;
+            Errors = errorMessages;
         }
     }
 }

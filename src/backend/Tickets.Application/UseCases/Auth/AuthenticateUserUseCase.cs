@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Tickets.Application.DTOs.Auth;
 using Tickets.Application.Services.Interfaces;
+using Tickets.Application.Validators.Auth;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Exceptions.ExceptionBase;
@@ -49,24 +50,28 @@ namespace Tickets.Application.UseCases.Auth
                 user.Id,
                 string.Join(",", roles));
 
-            return new LoginResponseDto
-            {
-                AccessToken = token
-            };
+            return response(token, user, roles);
         }
 
         private void ValidateRequest(LoginRequestDto request)
         {
-            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-            {
-                _logger.LogWarning("Login validation failed: Email or Password not provided");
-                throw new AuthValidationException("Email and Password are required");
-            }
+            var validator = new AuthenticateUserRequestValidator();
+            var result = validator.Validate(request);
 
+            if (!result.IsValid)
+            {
+                var errorMessages = result.Errors.Select(e => e.ErrorMessage).ToList();
+
+                _logger.LogWarning("Login validation failed: Email or Password not provided");
+                throw new AuthValidationException(errorMessages);
+            }
         }
 
         private async Task<User> ValidateCredentials(LoginRequestDto request)
         {
+
+            _logger.LogInformation("Validating credentials user request for {Email}", request.Email);
+
             var user = await _userRepository.GetByEmail(request.Email);
             if (user == null)
             {
@@ -100,6 +105,22 @@ namespace Tickets.Application.UseCases.Auth
             _logger.LogInformation("Credentials validated for user {UserId}", user.Id);
 
             return user;
+        }
+
+        private LoginResponseDto response(JsonTokenResultDto token, User user, IEnumerable<Role> roles)
+        {
+            return new LoginResponseDto
+            {
+                AccessToken = token.AccessToken,
+                ExpiresAt = token.ExpiresAt,
+                User = new LoginUserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Roles = roles.Select(r => r.Description).ToList()
+                }
+            };
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
 using System.Net;
 using Tickets.Exceptions.ExceptionBase;
+using Tickets.WebAPI.Models.Error.Response;
 
 namespace Tickets.WebAPI.Filters
 {
@@ -23,14 +23,12 @@ namespace Tickets.WebAPI.Filters
                 var exception = context.Exception as ErrorOnValidationException;
 
                 context.HttpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
-                context.Result = new BadRequestObjectResult(exception.ErrorMessages);
-            } 
-            else if (context.Exception is AuthValidationException)
+                context.Result = new BadRequestObjectResult(new ErrorResponseModel(exception.Errors));
+            }
+            else if (context.Exception is AuthValidationException exception)
             {
-                var exception = context.Exception as AuthValidationException;
-
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Result = new BadRequestObjectResult(exception.errorMessage);
+                context.Result = new BadRequestObjectResult(new ErrorResponseModel(exception.Errors));
             }
         }
 

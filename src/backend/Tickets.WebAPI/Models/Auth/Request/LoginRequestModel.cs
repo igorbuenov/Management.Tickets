@@ -1,4 +1,4 @@
-﻿namespace Tickets.WebAPI.Models.RequestModels.Auth.Request
+﻿namespace Tickets.WebAPI.Models.Auth.Request
 {
     public class LoginRequestModel
     {

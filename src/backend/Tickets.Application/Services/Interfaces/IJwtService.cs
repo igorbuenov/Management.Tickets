@@ -1,9 +1,10 @@
-﻿using Tickets.Domain.Entities;
+﻿using Tickets.Application.DTOs.Auth;
+using Tickets.Domain.Entities;
 
 namespace Tickets.Application.Services.Interfaces
 {
     public interface IJwtService
     {
-        string GenerateToken(int userId, string email,IEnumerable<Role> roles);
+        JsonTokenResultDto GenerateToken(int userId, string email,IEnumerable<Role> roles);
     }
 }
