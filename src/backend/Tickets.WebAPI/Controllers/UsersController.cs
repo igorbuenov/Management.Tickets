@@ -31,13 +31,7 @@ namespace Tickets.WebAPI.Controllers
 
             // Mapper Request to DTO
             CreateUserDto createUserDto = _mapper.Map<CreateUserDto>(request);
-
-            int userId = await _createUserUseCase.Execute(createUserDto);
-
-            CreateUserResponseModel response = new CreateUserResponseModel
-            {
-                UserId = userId
-            };
+            var response = _mapper.Map<CreateUserResponseModel>(await _createUserUseCase.Execute(createUserDto));
 
             return Created(string.Empty, response);
         }

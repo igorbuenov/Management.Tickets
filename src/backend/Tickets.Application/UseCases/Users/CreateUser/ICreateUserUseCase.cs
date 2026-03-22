@@ -4,6 +4,6 @@ namespace Tickets.Application.UseCases.Users.CreateUser
 {
     public interface ICreateUserUseCase
     {
-        Task<int> Execute(CreateUserDto request);
+        Task<CreateUserResponseDto> Execute(CreateUserDto request);
     }
 }

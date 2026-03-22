@@ -15,7 +15,6 @@
     <Folder Include="UseCases\Users\GetUsers\" />
     <Folder Include="UseCases\Users\GetUserById\" />
     <Folder Include="UseCases\Users\DeleteUser\" />
-    <Folder Include="UseCases\Users\LoginUser\" />
     <Folder Include="UseCases\Users\ChangePassword\" />
     <Folder Include="UseCases\Users\UpdateUser\" />
   </ItemGroup>

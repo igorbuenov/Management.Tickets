@@ -37,7 +37,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _logger = logger;
         }
 
-        public async Task<int> Execute(CreateUserDto request)
+        public async Task<CreateUserResponseDto> Execute(CreateUserDto request)
         {
             _logger.LogInformation("Create user request started for {Email} with Role {RoleId}", request.Email, request.RoleID);
 
@@ -66,7 +66,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
                 User = user,
                 HashPassword = encryptedPassword,
                 ExpirationDate = DateTime.UtcNow,
-                CreatedByUserId = (int)currentUserId
+                CreatedByUserId = currentUserId
             };
 
             await _passwordRepository.Add(userPassword);
@@ -78,7 +78,9 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             await _unitOfWork.Commit();
             _logger.LogInformation("Create user request completed successfully for {UserId}", user.Id);
 
-            return user.Id;
+            // TODO: Implementar serviço de email - Enviar Email com a senha para o usuário
+
+            return Response(user, request.RoleID);
         }
 
         private async Task ValidateRequestAsync(CreateUserDto request)
@@ -112,6 +114,20 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             }
 
             _logger.LogInformation("Create user request validation passed for {Email}", request.Email);
+        }
+
+        private CreateUserResponseDto Response(User user, int roleID)
+        {
+            return new CreateUserResponseDto
+            {
+                Success = true,
+                User = new CreateUserDto
+                {
+                    Name = user.Name,
+                    Email = user.Email,
+                    RoleID = roleID
+                }
+            };
         }
     }
 }

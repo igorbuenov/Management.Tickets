@@ -50,7 +50,7 @@ namespace Tickets.Application.UseCases.Auth
                 user.Id,
                 string.Join(",", roles));
 
-            return response(token, user, roles);
+            return Response(token, user, roles);
         }
 
         private void ValidateRequest(LoginRequestDto request)
@@ -107,7 +107,7 @@ namespace Tickets.Application.UseCases.Auth
             return user;
         }
 
-        private LoginResponseDto response(JsonTokenResultDto token, User user, IEnumerable<Role> roles)
+        private LoginResponseDto Response(JsonTokenResultDto token, User user, IEnumerable<Role> roles)
         {
             return new LoginResponseDto
             {
