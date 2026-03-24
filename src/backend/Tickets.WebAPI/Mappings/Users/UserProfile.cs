@@ -13,7 +13,7 @@ namespace Tickets.WebAPI.Mappings.Users
             CreateMap<CreateUserRequestModel, CreateUserDto>();
             CreateMap<CreateUserResponseDto, CreateUserResponseModel>();
             CreateMap<PagedResultDto<UserDto>, GetUsersResponseModel<UserDto>>();
-            // CreateMap<User, UserResponseModel>();
+            CreateMap<UserDto, UserResponseModel>();
         }
     }
 }

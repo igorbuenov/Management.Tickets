@@ -3,6 +3,7 @@ using Tickets.Application.Services;
 using Tickets.Application.Services.Interfaces;
 using Tickets.Application.UseCases.Auth;
 using Tickets.Application.UseCases.Users.CreateUser;
+using Tickets.Application.UseCases.Users.GetUserById;
 using Tickets.Application.UseCases.Users.GetUsers;
 
 namespace Tickets.Application
@@ -15,6 +16,9 @@ namespace Tickets.Application
             services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
             services.AddScoped<IAuthenticateUserUseCase, AuthenticateUserUseCase>();
             services.AddScoped<IGetUsersUseCase, GetUsersUseCase>();
+            services.AddScoped<IGetUserByIdUseCase, GetUserByIdUseCase>();
+
+            // Services
             services.AddScoped<IPasswordService, PasswordService>();
 
             return services;

@@ -10,5 +10,6 @@ namespace Tickets.Domain.Interfaces.Repositories
         Task<IEnumerable<User>> GetAllAsync();
         Task<IEnumerable<User>> GetPaged(int page, int pageSize);
         Task<int> Count();
+        Task<User> GetById(int id);
     }
 }

@@ -29,6 +29,11 @@ namespace Tickets.WebAPI.Filters
             {
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 context.Result = new BadRequestObjectResult(new ErrorResponseModel(exception.Errors));
+            } 
+            else if(context.Exception is NotFoundException ex)
+            {
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                context.Result = new NotFoundObjectResult(new ErrorResponseModel(ex.Errors));
             }
         }
 
