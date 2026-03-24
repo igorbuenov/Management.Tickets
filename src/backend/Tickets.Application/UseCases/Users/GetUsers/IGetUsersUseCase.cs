@@ -1,9 +1,10 @@
-﻿using Tickets.Application.DTOs.Users;
+﻿using Tickets.Application.DTOs.Common;
+using Tickets.Application.DTOs.Users;
 
 namespace Tickets.Application.UseCases.Users.GetUsers
 {
     public interface IGetUsersUseCase
     {
-        Task<GetUsersResponseDto> Execute();
+        Task<PagedResultDto<UserDto>> Execute(int page, int pageSize);
     }
 }

@@ -41,10 +41,10 @@ namespace Tickets.WebAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] GetUsersRequestModel request)
         {
-            var users = await _getUsersUseCase.Execute();
-            return Ok(users);
+            var response = _mapper.Map<GetUsersResponseModel<UserDto>>(await _getUsersUseCase.Execute(request.Page, request.PageSize));
+            return Ok(response);
         }
 
 

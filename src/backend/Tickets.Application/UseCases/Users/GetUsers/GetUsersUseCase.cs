@@ -1,6 +1,8 @@
-﻿using Tickets.Application.DTOs.Users;
+﻿using Tickets.Application.DTOs.Common;
+using Tickets.Application.DTOs.Users;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
+using Tickets.Exceptions.ExceptionBase;
 
 namespace Tickets.Application.UseCases.Users.GetUsers
 {
@@ -14,31 +16,37 @@ namespace Tickets.Application.UseCases.Users.GetUsers
             _userRepository = userRepository;
         }
 
-        public async Task<GetUsersResponseDto> Execute()
+        public async Task<PagedResultDto<UserDto>> Execute(int page, int pageSize)
         {
+            if (page <= 0)
+                throw new ErrorOnValidationException("Page must be greater than 0");
 
-            var users = await _userRepository.GetAllAsync();
+            if (pageSize <= 0)
+                throw new ErrorOnValidationException("PageSize must be greater than 0");
 
-            if (!users.Any())
-            {
-                //Lançar exception personalizada
-            }
+            var users = await _userRepository.GetPaged(page, pageSize);
 
-            return Response(users);
+            var total = await _userRepository.Count();
 
+            return BuildResponse(users, page, pageSize, total);
         }
 
-        private GetUsersResponseDto Response(IEnumerable<User> users)
+        private PagedResultDto<UserDto> BuildResponse(IEnumerable<User> users, int page, int pageSize, int total)
         {
-            return new GetUsersResponseDto
+
+            return new PagedResultDto<UserDto>
             {
-                Success = true,
-                Users = users.Select(u => new UserDto
+                Items = users.Select(u => new UserDto
                 {
                     Id = u.Id,
                     Name = u.Name,
                     Email = u.Email,
-                }).ToList()
+                    IsActive = u.IsActive
+                }).ToList(),
+
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = total
             };
         }
     }

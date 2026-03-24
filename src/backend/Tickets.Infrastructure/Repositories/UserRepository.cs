@@ -33,5 +33,22 @@ namespace Tickets.Infrastructure.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        public async Task<IEnumerable<User>> GetPaged(int page, int pageSize)
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .Where(u => u.IsActive)
+                .OrderBy(u => u.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+        public async Task<int> Count()
+        {
+            return await _context.Users
+            .Where(u => u.IsActive)
+            .CountAsync();
+        }
     }
 }
