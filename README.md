@@ -1,159 +1,129 @@
-﻿# 🎫 Management.Tickets
+﻿# 🎫 Management.Tickets API
 
-API backend para gerenciamento de chamados (tickets), desenvolvida com foco em boas práticas de arquitetura, segurança e escalabilidade, simulando um ambiente real de produção.
+Backend para gerenciamento de chamados (tickets), desenvolvido com foco em **arquitetura limpa, segurança e boas práticas de engenharia de software**, simulando um ambiente real de produção.
 
 ---
 
-## 🚀 Objetivo
+## 🚀 Visão geral
 
-Este projeto foi desenvolvido com o objetivo de:
+Este projeto foi criado para aplicar conceitos utilizados no mercado, com foco em:
 
-* Evoluir habilidades em backend com .NET
-* Aplicar conceitos de arquitetura limpa (Clean Architecture)
-* Simular um sistema real utilizado em empresas
-* Praticar boas práticas de segurança e organização de código
+* Separação clara de responsabilidades
+* Escalabilidade e manutenção
+* Segurança na aplicação
+* Código organizado e testável
+
+---
+
+## 🎯 Principais características
+
+* 🧱 Clean Architecture (Onion Architecture)
+* 🔐 Autenticação com JWT
+* 👥 Autorização baseada em roles (Admin, Technician, User)
+* 🧠 UseCases para centralizar regras de negócio
+* 📦 Repository Pattern + Unit of Work
+* ✅ Validação com FluentValidation
+* 🔄 Mapeamento com AutoMapper
+* 📊 Logging estruturado com Serilog
+* 🛡️ Boas práticas de segurança (hash de senha, proteção contra timing attacks)
 
 ---
 
 ## 🏗️ Arquitetura
 
-O projeto segue os princípios de **Clean Architecture (Onion Architecture)**, com separação clara de responsabilidades:
+O projeto segue os princípios da Clean Architecture:
 
-* **Presentation (WebAPI)** → Controllers, autenticação, configuração
-* **Application** → Casos de uso (UseCases), validações e regras de aplicação
-* **Domain** → Entidades e contratos (interfaces)
-* **Infrastructure** → Acesso a dados, serviços externos e implementações
+```
+Presentation (WebAPI)
+    ↓
+Application (UseCases, DTOs, Validators)
+    ↓
+Domain (Entities, Interfaces)
+    ↓
+Infrastructure (EF Core, Repositories, Services)
+```
+
+Essa estrutura garante:
+
+* baixo acoplamento
+* alta testabilidade
+* facilidade de evolução
 
 ---
 
-## 🧩 Tecnologias e padrões utilizados
+## 🧠 Decisões técnicas
 
-### 🔧 Tecnologias
-
-* .NET / ASP.NET Core Web API
-* Entity Framework Core
-* SQL Server
-* JWT Authentication
-* Serilog (logging estruturado)
-* AutoMapper
-* FluentValidation
-
-### 🧠 Padrões e conceitos
-
-* Clean Architecture
-* Repository Pattern
-* Unit of Work
-* Dependency Injection
-* DTOs (Data Transfer Objects)
-* Separation of Concerns
+* **UseCases**: centralizam a lógica da aplicação, mantendo controllers simples
+* **Repository Pattern**: desacopla o acesso ao banco de dados
+* **Unit of Work**: garante consistência nas operações
+* **JWT Authentication**: autenticação stateless
+* **FluentValidation**: validação robusta e desacoplada
+* **Serilog**: logging estruturado com rastreabilidade de requisições
 
 ---
 
 ## 🔐 Segurança
 
-O projeto implementa boas práticas de segurança:
+O projeto foi desenvolvido com foco em segurança:
 
-* Autenticação baseada em JWT
-* Autorização baseada em Roles (Admin, Technician, User)
-* Hash de senha com abstração via `IPasswordService`
-* Proteção contra ataques de timing em autenticação
-* Validação de entrada com FluentValidation
-
----
-
-## 📂 Estrutura do projeto
-
-```
-src/backend/
-├── Tickets.WebAPI        # Controllers, configuração da API, autenticação
-├── Tickets.Application   # UseCases, DTOs, validações
-├── Tickets.Domain        # Entidades e interfaces
-├── Tickets.Infrastructure # EF Core, repositórios, serviços e migrations
-```
+* Hash de senha via abstração (`IPasswordService`)
+* Armazenamento seguro de credenciais
+* Autenticação com JWT
+* Controle de acesso baseado em roles
+* Proteção contra ataques de timing
 
 ---
 
-## ⚙️ Funcionalidades principais
+## 📊 Logging e observabilidade
 
-* ✅ Cadastro de usuários
-* ✅ Autenticação com JWT
-* ✅ Controle de acesso por roles
-* ✅ Validação de dados
-* ✅ Logging estruturado
-* 🔄 (Em evolução) gerenciamento de tickets
-
----
-
-## 🧠 Casos de uso (UseCases)
-
-A lógica da aplicação é centralizada em UseCases, mantendo os controllers enxutos.
-
-Exemplos:
-
-* `CreateUserUseCase`
-
-  * Validação de dados
-  * Criação de usuário e senha
-  * Associação de roles
-  * Persistência via Unit of Work
-
-* `AuthenticateUserUseCase`
-
-  * Validação de credenciais
-  * Proteção contra timing attacks
-  * Geração de token JWT
-
----
-
-## 📊 Logging e Observabilidade
-
-O projeto utiliza **Serilog** com persistência em banco de dados:
+Logs estruturados com informações como:
 
 * UserId
-* RequestPath
-* RequestMethod
-* ClientIp
 * RequestId
+* Path e método HTTP
+* IP do cliente
 
-Logs são enriquecidos via middleware para rastreabilidade completa.
-
----
-
-## 🗄️ Banco de dados
-
-* SQL Server com Entity Framework Core
-* Migrations versionadas
-* Seed inicial de roles:
-
-  * Admin
-  * Technician
-  * User
+Permite rastrear facilmente o comportamento da aplicação.
 
 ---
 
-## ▶️ Como executar o projeto
+## ⚙️ Funcionalidades
 
-1. Clonar o repositório:
+* ✅ Cadastro de usuários
+* ✅ Autenticação
+* ✅ Controle de acesso
+* 🔄 Sistema de tickets (em evolução)
 
+---
+
+## ▶️ Como executar
+
+```bash
+git clone https://github.com/igorbuenov/Management.Tickets
+cd Management.Tickets
 ```
-git clone https://github.com/seu-usuario/management.tickets.git
+
+Configurar `appsettings.json`:
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "sua-connection-string"
+}
 ```
 
-2. Configurar a string de conexão no `appsettings.json`
+Executar migrations:
 
-3. Executar as migrations:
-
-```
+```bash
 dotnet ef database update
 ```
 
-4. Rodar a aplicação:
+Rodar aplicação:
 
-```
+```bash
 dotnet run
 ```
 
-5. Acessar o Swagger:
+Acessar Swagger:
 
 ```
 https://localhost:{porta}/swagger
@@ -161,34 +131,24 @@ https://localhost:{porta}/swagger
 
 ---
 
-## 🛣️ Roadmap (evoluções futuras)
+## 🛣️ Roadmap
 
 * [ ] Implementação completa de tickets
-* [ ] Mensageria com RabbitMQ
-* [ ] Testes automatizados (unitários e integração)
+* [ ] Testes automatizados
+* [ ] Mensageria (RabbitMQ)
 * [ ] Middleware global de exceção
-* [ ] Cache e otimizações de performance
-
----
-
-## 🎯 Diferenciais do projeto
-
-* Arquitetura próxima de sistemas reais
-* Forte preocupação com segurança
-* Uso de padrões de mercado
-* Logging estruturado para observabilidade
-* Separação clara de responsabilidades
+* [ ] Cache e otimizações
 
 ---
 
 ## 👨‍💻 Autor
 
-**Igor Bueno**  
-🔗 [LinkedIn](https://www.linkedin.com/in/igorbuenov/)  
+**Igor Bueno**
+🔗 [LinkedIn](https://www.linkedin.com/in/seu-linkedin)
 💻 Backend Developer (.NET | APIs | Segurança)
 
 ---
 
 ## 📌 Observação
 
-Este projeto foi desenvolvido com fins de estudo e evolução profissional, buscando simular desafios reais enfrentados no mercado.
+Projeto desenvolvido com foco em evolução profissional e simulação de cenários reais de mercado.
