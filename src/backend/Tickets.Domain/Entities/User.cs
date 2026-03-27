@@ -27,5 +27,12 @@
 
             IsActive = true;
         }
+
+        public void Update(string name, string email)
+        {
+            Name = name;
+            Email = email;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

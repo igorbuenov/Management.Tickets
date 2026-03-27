@@ -16,7 +16,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IPasswordService _passwordService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly ICurrentUser _currentUser;
         private readonly ILogger<CreateUserUseCase> _logger;
 
         public CreateUserUseCase(
@@ -25,7 +25,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             IPasswordRepository passwordRepository,
             IUnitOfWork unitOfWork,
             IUserRoleRepository userRoleRepository,
-            ICurrentUserService currentUserService,
+            ICurrentUser currentUserService,
             ILogger<CreateUserUseCase> logger)
         {
             _userRepository = userRepository;
@@ -33,7 +33,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _passwordRepository = passwordRepository;
             _unitOfWork = unitOfWork;
             _userRoleRepository = userRoleRepository;
-            _currentUserService = currentUserService;
+            _currentUser = currentUserService;
             _logger = logger;
         }
 
@@ -44,7 +44,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             // Validar request
             await ValidateRequestAsync(request);
 
-            var currentUserId = _currentUserService.UserId;
+            var currentUserId = _currentUser.UserId;
 
             User user = new User
             {

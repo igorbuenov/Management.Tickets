@@ -25,15 +25,21 @@ namespace Tickets.WebAPI.Filters
                 context.HttpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
                 context.Result = new BadRequestObjectResult(new ErrorResponseModel(exception.Errors));
             }
-            else if (context.Exception is AuthValidationException exception)
+            else if (context.Exception is AuthValidationException authValidationException)
             {
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Result = new BadRequestObjectResult(new ErrorResponseModel(exception.Errors));
+                context.Result = new BadRequestObjectResult(new ErrorResponseModel(authValidationException.Errors));
             } 
-            else if(context.Exception is NotFoundException ex)
+            else if(context.Exception is NotFoundException notFoundException)
             {
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                context.Result = new NotFoundObjectResult(new ErrorResponseModel(ex.Errors));
+                context.Result = new NotFoundObjectResult(new ErrorResponseModel(notFoundException.Errors));
+            }
+            else if (context.Exception is UnauthorizedException unauthorizedException)
+            {
+
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                context.Result = new UnauthorizedObjectResult(new ErrorResponseModel(unauthorizedException.Errors));
             }
         }
 

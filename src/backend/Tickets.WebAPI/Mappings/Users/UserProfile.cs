@@ -14,6 +14,7 @@ namespace Tickets.WebAPI.Mappings.Users
             CreateMap<CreateUserResponseDto, CreateUserResponseModel>();
             CreateMap<PagedResultDto<UserDto>, GetUsersResponseModel<UserDto>>();
             CreateMap<UserDto, UserResponseModel>();
+            CreateMap<UpdateUserRequestModel, UpdateUserDto>();
         }
     }
 }

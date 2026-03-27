@@ -5,6 +5,7 @@ using Tickets.Application.DTOs.Users;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.GetUserById;
 using Tickets.Application.UseCases.Users.GetUsers;
+using Tickets.Application.UseCases.Users.UpdateUser;
 using Tickets.WebAPI.Models.Users.Request;
 using Tickets.WebAPI.Models.Users.Response;
 
@@ -20,13 +21,15 @@ namespace Tickets.WebAPI.Controllers
         private readonly ICreateUserUseCase _createUserUseCase;
         private readonly IGetUsersUseCase _getUsersUseCase;
         private readonly IGetUserByIdUseCase _getUserByIdUseCase;
+        private readonly IUpdateUserUseCase _updateUserUseCase;
 
-        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase)
+        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase)
         {
             _mapper = mapper;
             _createUserUseCase = createUserUseCase;
             _getUsersUseCase = getUsersUseCase;
             _getUserByIdUseCase = getUserByIdUseCase;
+            _updateUserUseCase = updateUserUseCase;
         }
 
 
@@ -52,6 +55,18 @@ namespace Tickets.WebAPI.Controllers
         {
             var response = _mapper.Map<UserResponseModel>(await _getUserByIdUseCase.Execute(id));
             return Ok(response);
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequestModel request)
+        {
+            var updateuserDto = _mapper.Map<UpdateUserDto>(request);
+            updateuserDto.Id = id;
+
+            await _updateUserUseCase.Execute(updateuserDto);
+
+            return NoContent();
         }
 
 
