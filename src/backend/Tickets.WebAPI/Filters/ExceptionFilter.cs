@@ -41,6 +41,16 @@ namespace Tickets.WebAPI.Filters
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 context.Result = new UnauthorizedObjectResult(new ErrorResponseModel(unauthorizedException.Errors));
             }
+            else if (context.Exception is BusinessRuleException businessRuleException)
+            {
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Result = new ObjectResult(new ErrorResponseModel(businessRuleException.Errors));
+            }
+            else if (context.Exception is ForbiddenException forbiddenException)
+            {
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                context.Result = new ObjectResult(new ErrorResponseModel(forbiddenException.Errors));
+            }
         }
 
         private static void ThrowUnknowException(ExceptionContext context)

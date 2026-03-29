@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Users\DeleteUser\" />
     <Folder Include="UseCases\Users\ChangePassword\" />
   </ItemGroup>
 

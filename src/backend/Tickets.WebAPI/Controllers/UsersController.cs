@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.UseCases.Users.CreateUser;
+using Tickets.Application.UseCases.Users.DeleteUser;
 using Tickets.Application.UseCases.Users.GetUserById;
 using Tickets.Application.UseCases.Users.GetUsers;
 using Tickets.Application.UseCases.Users.UpdateUser;
@@ -22,14 +23,16 @@ namespace Tickets.WebAPI.Controllers
         private readonly IGetUsersUseCase _getUsersUseCase;
         private readonly IGetUserByIdUseCase _getUserByIdUseCase;
         private readonly IUpdateUserUseCase _updateUserUseCase;
+        private readonly IDeleteUserUseCase _deleteUserUseCase;
 
-        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase)
+        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase)
         {
             _mapper = mapper;
             _createUserUseCase = createUserUseCase;
             _getUsersUseCase = getUsersUseCase;
             _getUserByIdUseCase = getUserByIdUseCase;
             _updateUserUseCase = updateUserUseCase;
+            _deleteUserUseCase = deleteUserUseCase;
         }
 
 
@@ -69,6 +72,13 @@ namespace Tickets.WebAPI.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            await _deleteUserUseCase.Execute(id);
+            return NoContent();
+        }
 
     }
 }

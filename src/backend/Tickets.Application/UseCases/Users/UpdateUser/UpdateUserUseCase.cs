@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.Logging;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.Interfaces;
 using Tickets.Application.Validators.Users;

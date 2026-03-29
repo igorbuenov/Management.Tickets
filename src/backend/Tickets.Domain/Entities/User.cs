@@ -17,6 +17,7 @@
             if (!IsActive)
                 return;
 
+            UpdatedAt = DateTime.UtcNow;
             IsActive = false;
         }
 
@@ -25,6 +26,7 @@
             if (IsActive)
                 return;
 
+            UpdatedAt = DateTime.UtcNow;
             IsActive = true;
         }
 
