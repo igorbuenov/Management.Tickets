@@ -9,6 +9,8 @@ using Tickets.Infrastructure.Data;
 using Tickets.Infrastructure.Identity;
 using Tickets.Infrastructure.Repositories;
 using Tickets.Infrastructure.Security;
+using Tickets.Infrastructure.Settings;
+using Tickets.Infrastructure.Services.Email;
 
 namespace Tickets.Infrastructure
 {
@@ -32,6 +34,10 @@ namespace Tickets.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
+
+            // Email Service
+            services.Configure<BrevoSettings>(configuration.GetSection("BrevoSettings"));
+            services.AddHttpClient<IEmailService, BrevoEmailService>();
 
             return services;
         }

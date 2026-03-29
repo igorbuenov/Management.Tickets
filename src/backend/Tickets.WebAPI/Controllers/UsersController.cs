@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
+using Tickets.Application.Interfaces;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.DeleteUser;
 using Tickets.Application.UseCases.Users.GetUserById;
