@@ -144,7 +144,7 @@ https://localhost:{porta}/swagger
 ## 👨‍💻 Autor
 
 **Igor Bueno**
-🔗 [LinkedIn](https://www.linkedin.com/in/seu-linkedin)
+🔗 [LinkedIn](https://www.linkedin.com/in/igorbuenov/)
 💻 Backend Developer (.NET | APIs | Segurança)
 
 ---
