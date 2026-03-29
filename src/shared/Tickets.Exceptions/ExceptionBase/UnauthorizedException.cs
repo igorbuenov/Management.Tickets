@@ -1,17 +1,12 @@
-﻿namespace Tickets.Exceptions.ExceptionBase
+﻿using System.Net;
+
+namespace Tickets.Exceptions.ExceptionBase
 {
     public class UnauthorizedException : TicketsException
     {
-        public List<string> Errors { get; set; } = new List<string>();
+        public override HttpStatusCode StatusCode => HttpStatusCode.Unauthorized;
 
-        public UnauthorizedException(string message)
-        {
-            Errors.Add(message);
-        }
-
-        public UnauthorizedException(List<string> messages)
-        {
-            Errors = messages;
-        }
+        public UnauthorizedException(string message) : base(message) { }
+        public UnauthorizedException(List<string> messages) : base(messages) { }
     }
 }

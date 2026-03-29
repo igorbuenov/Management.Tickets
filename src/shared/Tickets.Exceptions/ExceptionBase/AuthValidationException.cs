@@ -1,17 +1,13 @@
-﻿namespace Tickets.Exceptions.ExceptionBase
+﻿using System.Net;
+
+namespace Tickets.Exceptions.ExceptionBase
 {
     public class AuthValidationException : TicketsException
     {
-        public List<string> Errors { get; set; } = new List<string>();
+        public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
+        
+        public AuthValidationException(string message) : base(message) { }
+        public AuthValidationException(List<string> errors) : base(errors) { }
 
-        public AuthValidationException(string message)
-        {
-            Errors.Add(message);
-        }
-
-        public AuthValidationException(List<string> messages)
-        {
-            Errors = messages;
-        }
     }
 }

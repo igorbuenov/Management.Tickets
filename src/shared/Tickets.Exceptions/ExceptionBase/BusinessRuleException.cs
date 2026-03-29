@@ -1,17 +1,13 @@
-﻿namespace Tickets.Exceptions.ExceptionBase
+﻿using System.Net;
+
+namespace Tickets.Exceptions.ExceptionBase
 {
     public class BusinessRuleException : TicketsException
     {
-        public List<string> Errors { get; set; } = new List<string>();
+        public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
 
-        public BusinessRuleException(string message)
-        {
-            Errors.Add(message);
-        }
-
-        public BusinessRuleException(List<string> messages)
-        {
-            Errors = messages;
-        }
+        public BusinessRuleException(string message) : base(message) { }
+        public BusinessRuleException(List<string> messages) : base(messages) { }
+        
     }
 }

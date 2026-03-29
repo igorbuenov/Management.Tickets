@@ -1,17 +1,12 @@
-﻿namespace Tickets.Exceptions.ExceptionBase
+﻿using System.Net;
+
+namespace Tickets.Exceptions.ExceptionBase
 {
     public class NotFoundException : TicketsException
     {
-        public List<string> Errors { get; set; } = new List<string>();
+        public override HttpStatusCode StatusCode => HttpStatusCode.NotFound;
 
-        public NotFoundException(string message)
-        {
-            Errors.Add(message);
-        }
-
-        public NotFoundException(List<string> messages)
-        {
-            Errors = messages;
-        }
+        public NotFoundException(string message) : base(message) { }
+        public NotFoundException(List<string> messages) : base(messages) { }
     }
 }
