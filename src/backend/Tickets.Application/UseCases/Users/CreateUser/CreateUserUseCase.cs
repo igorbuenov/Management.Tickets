@@ -18,6 +18,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUser _currentUser;
         private readonly ILogger<CreateUserUseCase> _logger;
+        private readonly IUserEmailService _userEmailService;
 
         public CreateUserUseCase(
             IUserRepository userRepository,
@@ -26,7 +27,8 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             IUnitOfWork unitOfWork,
             IUserRoleRepository userRoleRepository,
             ICurrentUser currentUserService,
-            ILogger<CreateUserUseCase> logger)
+            ILogger<CreateUserUseCase> logger,
+            IUserEmailService userEmailService)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -35,6 +37,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _userRoleRepository = userRoleRepository;
             _currentUser = currentUserService;
             _logger = logger;
+            _userEmailService = userEmailService;
         }
 
         public async Task<CreateUserResponseDto> Execute(CreateUserDto request)
@@ -79,6 +82,10 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _logger.LogInformation("Create user request completed successfully for {UserId}", user.Id);
 
             // TODO: Implementar serviço de email - Enviar Email com a senha para o usuário
+            await _userEmailService.SendWelcomeEmailAsync(
+                user.Email,
+                user.Name,
+                password);
 
             return Response(user, request.RoleID);
         }

@@ -38,6 +38,7 @@ namespace Tickets.Infrastructure
             // Email Service
             services.Configure<BrevoSettings>(configuration.GetSection("BrevoSettings"));
             services.AddHttpClient<IEmailService, BrevoEmailService>();
+            services.AddScoped<IUserEmailService, UserEmailService>();
 
             return services;
         }
