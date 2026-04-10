@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Tickets.Application.Interfaces;
-using Tickets.Application.Services.Interfaces;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Infrastructure.Data;
 using Tickets.Infrastructure.Identity;
@@ -11,6 +10,7 @@ using Tickets.Infrastructure.Repositories;
 using Tickets.Infrastructure.Security;
 using Tickets.Infrastructure.Settings;
 using Tickets.Infrastructure.Services.Email;
+using Tickets.Infrastructure.Security.PasswordHashing;
 
 namespace Tickets.Infrastructure
 {
@@ -34,6 +34,9 @@ namespace Tickets.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
+
+            // Password Hashing
+            services.AddScoped<IPasswordHasher, BCryptPasswordHashAlgorithm>();
 
             // Email Service
             services.Configure<BrevoSettings>(configuration.GetSection("BrevoSettings"));

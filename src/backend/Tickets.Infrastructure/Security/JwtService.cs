@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Tickets.Application.DTOs.Auth;
-using Tickets.Application.Services.Interfaces;
+using Tickets.Application.Interfaces;
 using Tickets.Domain.Entities;
 
 namespace Tickets.Infrastructure.Security

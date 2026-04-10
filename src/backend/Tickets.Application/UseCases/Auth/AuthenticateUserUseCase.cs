@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Tickets.Application.DTOs.Auth;
-using Tickets.Application.Services.Interfaces;
+using Tickets.Application.Interfaces;
 using Tickets.Application.Validators.Auth;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;

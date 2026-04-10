@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.Interfaces;
-using Tickets.Application.Services.Interfaces;
 using Tickets.Application.Validators.Users;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
@@ -61,13 +60,13 @@ namespace Tickets.Application.UseCases.Users.CreateUser
 
             // Gerar e Criptografar Senha para o usuário
             string password = _passwordService.GenerateRandomPassword();
-            string encryptedPassword = _passwordService.EncryptPassword(password);
+            string hashPassword = _passwordService.HashPassword(password);
 
             // Salvar Senhado usuário na tabela de senha
             UserPassword userPassword = new UserPassword
             {
                 User = user,
-                HashPassword = encryptedPassword,
+                HashPassword = hashPassword,
                 ExpirationDate = DateTime.UtcNow,
                 CreatedByUserId = currentUserId
             };

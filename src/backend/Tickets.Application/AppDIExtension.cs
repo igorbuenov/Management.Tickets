@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Tickets.Application.Services;
-using Tickets.Application.Services.Interfaces;
 using Tickets.Application.UseCases.Auth;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.GetUserById;
@@ -10,6 +9,7 @@ using Tickets.Application.Validators.Users;
 using FluentValidation;
 using System.Reflection;
 using Tickets.Application.UseCases.Users.DeleteUser;
+using Tickets.Application.Interfaces;
 
 namespace Tickets.Application
 {

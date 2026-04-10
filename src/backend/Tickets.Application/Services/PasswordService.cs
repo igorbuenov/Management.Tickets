@@ -1,12 +1,17 @@
 ﻿using System.Security.Cryptography;
-using System.Text;
-using Tickets.Application.Services.Interfaces;
+using Tickets.Application.Interfaces;
 
 namespace Tickets.Application.Services
 {
     public class PasswordService : IPasswordService
     {
-        public string SaltKey { get; set; }
+
+        private readonly IPasswordHasher _passwordHasher;
+
+        public PasswordService(IPasswordHasher passwordHasher)
+        {
+            _passwordHasher = passwordHasher;
+        }
 
         public string GenerateRandomPassword()
         {
@@ -42,31 +47,14 @@ namespace Tickets.Application.Services
             return chars[index];
         }
 
-        public string EncryptPassword(string password)
+        public string HashPassword(string password)
         {
-            var newPassword = $"{password}{SaltKey}";
-
-            var bytes = Encoding.UTF8.GetBytes(newPassword);
-            var hashBytes = SHA512.HashData(bytes);
-
-            return StringBytes(hashBytes);
-        }
-
-        private static string StringBytes(byte[] bytes)
-        {
-            var sb = new StringBuilder();
-            foreach (var b in bytes)
-            {
-                sb.Append(b.ToString("x2"));
-            }
-
-            return sb.ToString();
+            return _passwordHasher.HashPassword(password);
         }
 
         public bool VerifyPassword(string password, string hashPassword)
         {
-            var encryptedPassword = EncryptPassword(password);
-            return encryptedPassword == hashPassword;
+            return _passwordHasher.VerifyPassword(password, hashPassword);
         }
 
 

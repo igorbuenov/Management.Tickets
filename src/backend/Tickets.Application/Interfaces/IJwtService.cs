@@ -1,7 +1,7 @@
 ﻿using Tickets.Application.DTOs.Auth;
 using Tickets.Domain.Entities;
 
-namespace Tickets.Application.Services.Interfaces
+namespace Tickets.Application.Interfaces
 {
     public interface IJwtService
     {
