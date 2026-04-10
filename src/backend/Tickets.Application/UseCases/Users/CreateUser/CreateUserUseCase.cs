@@ -12,6 +12,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordRepository _passwordRepository;
+        private readonly IUserPasswordHistoryRepository _userPasswordHistoryRepository;
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IPasswordService _passwordService;
         private readonly IUnitOfWork _unitOfWork;
@@ -27,7 +28,8 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             IUserRoleRepository userRoleRepository,
             ICurrentUser currentUserService,
             ILogger<CreateUserUseCase> logger,
-            IUserEmailService userEmailService)
+            IUserEmailService userEmailService,
+            IUserPasswordHistoryRepository userPasswordHistoryRepository)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -37,6 +39,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _currentUser = currentUserService;
             _logger = logger;
             _userEmailService = userEmailService;
+            _userPasswordHistoryRepository = userPasswordHistoryRepository;
         }
 
         public async Task<CreateUserResponseDto> Execute(CreateUserDto request)
@@ -73,6 +76,18 @@ namespace Tickets.Application.UseCases.Users.CreateUser
 
             await _passwordRepository.Add(userPassword);
             _logger.LogInformation("Password record created for user {UserId} (expiration: {Expiration})", user.Id, userPassword.ExpirationDate);
+
+            // TODO: Adicionar histórico de senhas
+            UserPasswordHistory passwordHistory = new UserPasswordHistory
+            {
+                User = user,
+                HashPassword = hashPassword,
+                CreatedByUserId = currentUserId,
+                CreatedAt = userPassword.CreatedAt 
+            };
+
+            await _userPasswordHistoryRepository.Add(passwordHistory);
+            _logger.LogInformation("Password history record created for user {UserId}", user.Id);
 
             await _userRoleRepository.Add(request.RoleID, user);
             _logger.LogInformation("Role {RoleId} assigned to user {UserId}", request.RoleID, user.Id);
