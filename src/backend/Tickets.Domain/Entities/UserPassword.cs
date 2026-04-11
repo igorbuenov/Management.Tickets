@@ -16,5 +16,14 @@
             
         }
 
+        public void Update(string hashPassword, DateTime expirationDate, int createdByUserId)
+        {
+            HashPassword = hashPassword;
+            ExpirationDate = expirationDate;
+            CreatedByUserId = createdByUserId;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+
     }
 }

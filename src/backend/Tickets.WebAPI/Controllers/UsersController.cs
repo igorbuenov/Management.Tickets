@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.Interfaces;
+using Tickets.Application.UseCases.Users.ChangePassword;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.DeleteUser;
 using Tickets.Application.UseCases.Users.GetUserById;
@@ -25,8 +26,9 @@ namespace Tickets.WebAPI.Controllers
         private readonly IGetUserByIdUseCase _getUserByIdUseCase;
         private readonly IUpdateUserUseCase _updateUserUseCase;
         private readonly IDeleteUserUseCase _deleteUserUseCase;
+        private readonly IUpdatePasswordUseCase _updatePasswordUseCase;
 
-        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase)
+        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase, IUpdatePasswordUseCase updatePasswordUseCase)
         {
             _mapper = mapper;
             _createUserUseCase = createUserUseCase;
@@ -34,6 +36,7 @@ namespace Tickets.WebAPI.Controllers
             _getUserByIdUseCase = getUserByIdUseCase;
             _updateUserUseCase = updateUserUseCase;
             _deleteUserUseCase = deleteUserUseCase;
+            _updatePasswordUseCase = updatePasswordUseCase;
         }
 
 
@@ -54,7 +57,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var response = _mapper.Map<UserResponseModel>(await _getUserByIdUseCase.Execute(id));
@@ -62,7 +65,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}/update-user")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequestModel request)
         {
             var updateuserDto = _mapper.Map<UpdateUserDto>(request);
@@ -74,10 +77,18 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             await _deleteUserUseCase.Execute(id);
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("{id:int}/update-password")]
+        public async Task<IActionResult> UpdatePassword(int id, [FromBody] UpdatePasswordRequestModel request)
+        {
+            await _updatePasswordUseCase.Execute(_mapper.Map<UpdatePasswordRequestDto>(request), id);
             return NoContent();
         }
 
