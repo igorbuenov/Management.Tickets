@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using Tickets.Application.Commons.Security;
 using Tickets.Application.Interfaces;
 
 namespace Tickets.Application.Services
@@ -15,18 +16,19 @@ namespace Tickets.Application.Services
 
         public string GenerateRandomPassword()
         {
-            int length = 12;
+            int length = RandomNumberGenerator.GetInt32(
+                PasswordPolicy.MinLength,
+                PasswordPolicy.MaxLength + 1);
 
             const string lower = "abcdefghijklmnopqrstuvwxyz";
             const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const string numbers = "0123456789";
-            const string special = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+            const string special = PasswordPolicy.AllowedSpecialCharacters;
 
             string allChars = lower + upper + numbers + special;
 
             var passwordChars = new char[length];
 
-            // Garantir pelo menos um de cada
             passwordChars[0] = GetRandomChar(lower);
             passwordChars[1] = GetRandomChar(upper);
             passwordChars[2] = GetRandomChar(numbers);
@@ -37,8 +39,9 @@ namespace Tickets.Application.Services
                 passwordChars[i] = GetRandomChar(allChars);
             }
 
-            // Embaralhar a senha
-            return new string(passwordChars.OrderBy(_ => RandomNumberGenerator.GetInt32(int.MaxValue)).ToArray());
+            return new string(passwordChars
+                .OrderBy(_ => RandomNumberGenerator.GetInt32(int.MaxValue))
+                .ToArray());
         }
 
         private static char GetRandomChar(string chars)

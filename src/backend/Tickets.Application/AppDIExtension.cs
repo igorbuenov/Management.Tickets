@@ -10,6 +10,7 @@ using FluentValidation;
 using System.Reflection;
 using Tickets.Application.UseCases.Users.DeleteUser;
 using Tickets.Application.Interfaces;
+using Tickets.Application.UseCases.Users.ChangePassword;
 
 namespace Tickets.Application
 {
@@ -24,6 +25,7 @@ namespace Tickets.Application
             services.AddScoped<IGetUserByIdUseCase, GetUserByIdUseCase>();
             services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
             services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
+            services.AddScoped<IUpdatePasswordUseCase, UpdatePasswordUseCase>();
 
             // Services
             services.AddScoped<IPasswordService, PasswordService>();
