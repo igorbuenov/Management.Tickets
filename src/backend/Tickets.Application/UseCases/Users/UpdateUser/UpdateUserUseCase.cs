@@ -70,7 +70,7 @@ namespace Tickets.Application.UseCases.Users.UpdateUser
             if (!user.IsActive)
             {
                 _logger.LogWarning("Attempt to update inactive user {TargetUserId}", request.Id);
-                throw new ErrorOnValidationException("Usuário inativo não pode ser atualizado");
+                throw new BusinessRuleException("Usuário inativo não pode ser atualizado");
             }
 
             if (user.Email != request.Email)

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentValidation;
+using Microsoft.Extensions.Logging;
 using Tickets.Application.DTOs.Auth;
 using Tickets.Application.Interfaces;
 using Tickets.Application.Validators.Auth;
@@ -16,6 +17,7 @@ namespace Tickets.Application.UseCases.Auth
         private readonly IPasswordService _passwordService;
         private readonly IJwtService _jwtService;
         private readonly ILogger<AuthenticateUserUseCase> _logger;
+        private readonly IValidator<LoginRequestDto> _validator;
 
         public AuthenticateUserUseCase(
             IUserRepository userRepository,
@@ -23,7 +25,8 @@ namespace Tickets.Application.UseCases.Auth
             IUserRoleRepository userRoleRepository,
             IPasswordService passwordService,
             IJwtService jwtService,
-            ILogger<AuthenticateUserUseCase> logger)
+            ILogger<AuthenticateUserUseCase> logger,
+            IValidator<LoginRequestDto> validator)
         {
             _userRepository = userRepository;
             _passwordRepository = passwordRepository;
@@ -31,6 +34,7 @@ namespace Tickets.Application.UseCases.Auth
             _passwordService = passwordService;
             _jwtService = jwtService;
             _logger = logger;
+            _validator = validator;
         }
 
         public async Task<LoginResponseDto> Execute(LoginRequestDto request)
@@ -55,8 +59,7 @@ namespace Tickets.Application.UseCases.Auth
 
         private void ValidateRequest(LoginRequestDto request)
         {
-            var validator = new AuthenticateUserRequestValidator();
-            var result = validator.Validate(request);
+            var result = _validator.Validate(request);
 
             if (!result.IsValid)
             {

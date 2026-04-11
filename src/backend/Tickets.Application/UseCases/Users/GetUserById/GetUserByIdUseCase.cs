@@ -32,7 +32,7 @@ namespace Tickets.Application.UseCases.Users.GetUserById
             if (user == null)
             {
                 _logger.LogWarning("User with ID {UserId} not found.", id);
-                throw new Exception($"User with ID {id} not found.");
+                throw new NotFoundException($"User with ID {id} not found.");
             }
 
             _logger.LogInformation("User with ID {UserId} retrieved successfully.", id);

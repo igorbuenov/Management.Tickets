@@ -25,6 +25,8 @@ namespace Tickets.Application.UseCases.Users.GetUsers
                 throw new ErrorOnValidationException("PageSize must be greater than 0");
 
             var users = await _userRepository.GetPaged(page, pageSize);
+            if (users == null || !users.Any())
+                throw new NotFoundException("No users found for the given page and page size");
 
             var total = await _userRepository.Count();
 

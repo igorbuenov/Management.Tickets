@@ -7,7 +7,7 @@ using Tickets.Application.DTOs.Auth;
 using Tickets.Application.Interfaces;
 using Tickets.Domain.Entities;
 
-namespace Tickets.Infrastructure.Security
+namespace Tickets.Infrastructure.Security.Jwt
 {
     public class JwtService : IJwtService
     {

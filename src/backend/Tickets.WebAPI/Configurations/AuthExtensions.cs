@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using Tickets.Infrastructure.Security;
+using Tickets.Infrastructure.Security.Jwt;
 
 namespace Tickets.WebAPI.Configuration;
 

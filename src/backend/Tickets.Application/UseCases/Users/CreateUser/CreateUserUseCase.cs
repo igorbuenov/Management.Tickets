@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentValidation;
+using Microsoft.Extensions.Logging;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.Interfaces;
-using Tickets.Application.Validators.Users;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Exceptions.ExceptionBase;
@@ -19,6 +19,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
         private readonly ICurrentUser _currentUser;
         private readonly ILogger<CreateUserUseCase> _logger;
         private readonly IUserEmailService _userEmailService;
+        private readonly IValidator<CreateUserDto> _validator;
 
         public CreateUserUseCase(
             IUserRepository userRepository,
@@ -29,7 +30,8 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             ICurrentUser currentUserService,
             ILogger<CreateUserUseCase> logger,
             IUserEmailService userEmailService,
-            IUserPasswordHistoryRepository userPasswordHistoryRepository)
+            IUserPasswordHistoryRepository userPasswordHistoryRepository,
+            IValidator<CreateUserDto> validator)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -40,6 +42,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _logger = logger;
             _userEmailService = userEmailService;
             _userPasswordHistoryRepository = userPasswordHistoryRepository;
+            _validator = validator;
         }
 
         public async Task<CreateUserResponseDto> Execute(CreateUserDto request)
@@ -77,7 +80,6 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             await _passwordRepository.Add(userPassword);
             _logger.LogInformation("Password record created for user {UserId} (expiration: {Expiration})", user.Id, userPassword.ExpirationDate);
 
-            // TODO: Adicionar histórico de senhas
             UserPasswordHistory passwordHistory = new UserPasswordHistory
             {
                 User = user,
@@ -101,16 +103,14 @@ namespace Tickets.Application.UseCases.Users.CreateUser
                 user.Name,
                 password);
 
-            return Response(user, request.RoleID);
+            return BuildResponse(user, request.RoleID);
         }
 
         private async Task ValidateRequestAsync(CreateUserDto request)
         {
             _logger.LogInformation("Validating create user request for {Email}", request.Email);
 
-            var validator = new CreateUserValidator();
-
-            var result = validator.Validate(request);
+            var result = _validator.Validate(request);
 
             var emailExist = await _userRepository.ExistActiveUserWithEmail(request.Email);
             if (emailExist)
@@ -137,7 +137,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _logger.LogInformation("Create user request validation passed for {Email}", request.Email);
         }
 
-        private CreateUserResponseDto Response(User user, int roleID)
+        private CreateUserResponseDto BuildResponse(User user, int roleID)
         {
             return new CreateUserResponseDto
             {

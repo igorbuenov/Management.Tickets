@@ -1,4 +1,4 @@
-﻿namespace Tickets.Infrastructure.Security
+﻿namespace Tickets.Infrastructure.Security.Jwt
 {
     public class JwtSettings
     {
