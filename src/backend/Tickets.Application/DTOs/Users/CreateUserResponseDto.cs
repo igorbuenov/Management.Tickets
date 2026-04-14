@@ -3,6 +3,6 @@
     public class CreateUserResponseDto
     {
         public bool Success { get; set; } = false;
-        public CreateUserDto User { get; set; }
+        public CreateUserRequestDto User { get; set; }
     }
 }

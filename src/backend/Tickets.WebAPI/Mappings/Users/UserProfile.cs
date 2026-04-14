@@ -10,7 +10,7 @@ namespace Tickets.WebAPI.Mappings.Users
     {
         public UserProfile()
         {
-            CreateMap<CreateUserRequestModel, CreateUserDto>();
+            CreateMap<CreateUserRequestModel, CreateUserRequestDto>();
             CreateMap<CreateUserResponseDto, CreateUserResponseModel>();
             CreateMap<PagedResultDto<UserDto>, GetUsersResponseModel<UserDto>>();
             CreateMap<UserDto, UserResponseModel>();

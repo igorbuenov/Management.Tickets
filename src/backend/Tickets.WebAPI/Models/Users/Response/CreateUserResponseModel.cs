@@ -5,6 +5,6 @@ namespace Tickets.WebAPI.Models.Users.Response
     public class CreateUserResponseModel
     {
         public bool Success { get; set; } = false;
-        public CreateUserDto User { get; set; }
+        public CreateUserRequestDto User { get; set; }
     }
 }

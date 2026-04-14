@@ -19,7 +19,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
         private readonly ICurrentUser _currentUser;
         private readonly ILogger<CreateUserUseCase> _logger;
         private readonly IUserEmailService _userEmailService;
-        private readonly IValidator<CreateUserDto> _validator;
+        private readonly IValidator<CreateUserRequestDto> _validator;
 
         public CreateUserUseCase(
             IUserRepository userRepository,
@@ -31,7 +31,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             ILogger<CreateUserUseCase> logger,
             IUserEmailService userEmailService,
             IUserPasswordHistoryRepository userPasswordHistoryRepository,
-            IValidator<CreateUserDto> validator)
+            IValidator<CreateUserRequestDto> validator)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -45,7 +45,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _validator = validator;
         }
 
-        public async Task<CreateUserResponseDto> Execute(CreateUserDto request)
+        public async Task<CreateUserResponseDto> Execute(CreateUserRequestDto request)
         {
             _logger.LogInformation("Create user request started for {Email} with Role {RoleId}", request.Email, request.RoleID);
 
@@ -106,7 +106,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             return BuildResponse(user, request.RoleID);
         }
 
-        private async Task ValidateRequestAsync(CreateUserDto request)
+        private async Task ValidateRequestAsync(CreateUserRequestDto request)
         {
             _logger.LogInformation("Validating create user request for {Email}", request.Email);
 
@@ -142,7 +142,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             return new CreateUserResponseDto
             {
                 Success = true,
-                User = new CreateUserDto
+                User = new CreateUserRequestDto
                 {
                     Name = user.Name,
                     Email = user.Email,

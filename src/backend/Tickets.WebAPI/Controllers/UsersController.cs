@@ -44,7 +44,7 @@ namespace Tickets.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestModel request)
         {
-            var response = _mapper.Map<CreateUserResponseModel>(await _createUserUseCase.Execute(_mapper.Map<CreateUserDto>(request)));
+            var response = _mapper.Map<CreateUserResponseModel>(await _createUserUseCase.Execute(_mapper.Map<CreateUserRequestDto>(request)));
             return Created(string.Empty, response);
         }
 

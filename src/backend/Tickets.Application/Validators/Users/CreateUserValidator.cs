@@ -3,7 +3,7 @@ using Tickets.Application.DTOs.Users;
 
 namespace Tickets.Application.Validators.Users
 {
-    public class CreateUserValidator : AbstractValidator<CreateUserDto> 
+    public class CreateUserValidator : AbstractValidator<CreateUserRequestDto> 
     {
         public CreateUserValidator()
         {
@@ -13,16 +13,18 @@ namespace Tickets.Application.Validators.Users
 
             RuleFor(user => user.Email)
                 .NotEmpty()
-                .WithMessage("O email do usuário é obrigatório.")
-                .EmailAddress()
-                .WithMessage("O email do usuário deve ser um endereço de email válido.");
+                .WithMessage("O email do usuário é obrigatório.");
 
             RuleFor(user => user.RoleID)
-                .NotEmpty()
-                .WithMessage("O tipo do usuário é obrigatório.");
+                .InclusiveBetween(1, 3)
+                .WithMessage("O tipo do usuário deve ser 1 (Admin), 2 (Technician) ou 3 (User).");
 
+            When(user => !string.IsNullOrEmpty(user.Email), () =>
+            {
+                RuleFor(user => user.Email)
+                    .EmailAddress()
+                    .WithMessage("O email do usuário deve ser um endereço de email válido.");
+            });
         }
-
-
     }
 }
