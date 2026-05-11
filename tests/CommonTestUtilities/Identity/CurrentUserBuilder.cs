@@ -8,6 +8,7 @@ namespace CommonTestUtilities.Identity
         public static ICurrentUser Build()
         {
             var mock = new Mock<ICurrentUser>();
+            mock.SetupGet(x => x.UserId).Returns(1);
             return mock.Object;
         }
     }

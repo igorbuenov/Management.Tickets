@@ -8,6 +8,9 @@ namespace CommonTestUtilities.Repositories
         public static IUnitOfWork Build()
         {
             var mock = new Mock<IUnitOfWork>();
+
+            mock.Setup(u => u.Commit()).Returns(Task.CompletedTask);
+
             return mock.Object;
         }
     }
