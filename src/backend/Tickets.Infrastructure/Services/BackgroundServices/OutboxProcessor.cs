@@ -1,0 +1,75 @@
+﻿using Tickets.Domain.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Tickets.Domain.Interfaces.Repositories;
+using Tickets.Application.Interfaces.Messaging;
+
+namespace Tickets.Infrastructure.Services.BackgroundServices
+{
+    public class OutboxProcessor : BackgroundService
+    {
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ILogger<OutboxProcessor> _logger;
+
+        public OutboxProcessor(IServiceScopeFactory scopeFactory, ILogger<OutboxProcessor> logger)
+        {
+            _scopeFactory = scopeFactory;
+            _logger = logger;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                using var scope = _scopeFactory.CreateScope();
+
+                var outboxRepository = 
+                    scope.ServiceProvider
+                    .GetRequiredService<IOutboxRepository>();
+
+                var publisher = 
+                    scope.ServiceProvider
+                    .GetRequiredService<IMessagePublisher>();
+
+                var unitOfWork = 
+                    scope.ServiceProvider
+                    .GetRequiredService<IUnitOfWork>();
+
+                var messages =
+                    await outboxRepository.GetPendingMessages(10);
+
+                foreach (var message in messages)
+                {
+                    try
+                    {
+                        await publisher.PublishAsync(message.Type, message.Content);
+
+                        message.ProcessedAt = DateTime.UtcNow;
+
+                        _logger.LogInformation($"Outbox message {message.Id} published succefully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        message.RetryCount++;
+                        message.Error = ex.Message;
+
+                        _logger.LogError(
+                            ex, 
+                            $"Error processing outbox message {message.Id}. Attempt: {message.RetryCount}",
+                            message.Id,
+                            message.RetryCount);
+                    }
+                }
+
+
+                await unitOfWork.Commit();
+
+                await Task.Delay(
+                    TimeSpan.FromSeconds(5),
+                    stoppingToken);
+
+            }
+        }
+    }
+}

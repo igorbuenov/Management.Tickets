@@ -3,5 +3,6 @@
     public interface IUserEmailService
     {
         Task SendWelcomeEmailAsync(string email, string name, string temporaryPassword);
+        Task SendPasswordResetEmailAsync(string email, string name, string temporaryPassword);
     }
 }
