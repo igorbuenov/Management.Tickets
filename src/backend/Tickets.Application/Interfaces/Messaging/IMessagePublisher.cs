@@ -2,6 +2,6 @@
 {
     public interface IMessagePublisher
     {
-        Task PublishAsync(string type, string content);
+        Task PublishAsync(string type, string content, string queueName);
     }
 }

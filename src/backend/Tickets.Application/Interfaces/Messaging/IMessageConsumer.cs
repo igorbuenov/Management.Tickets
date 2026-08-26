@@ -2,6 +2,6 @@
 {
     public interface IMessageConsumer
     {
-        Task StartAsync(CancellationToken cancellationToken);
+        Task StartAsync(string queueName, CancellationToken cancellationToken);
     }
 }

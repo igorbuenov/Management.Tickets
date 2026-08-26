@@ -12,7 +12,7 @@ using Tickets.Application.UseCases.Users.DeleteUser;
 using Tickets.Application.Interfaces;
 using Tickets.Application.UseCases.Users.ChangePassword;
 using Tickets.Application.UseCases.Users.ForgotPassword;
-using Tickets.Application.Handlers.PasswordRecoveryEmail;
+using Tickets.Application.Handlers.EventEmailHandler;
 
 namespace Tickets.Application
 {
@@ -31,7 +31,7 @@ namespace Tickets.Application
             services.AddScoped<IForgotPasswordUseCase, ForgotPasswordUseCase>();
 
             // Handlers
-            services.AddScoped<IPasswordRecoveryEmailHandler, PasswordRecoveryEmailHandler>();
+            services.AddScoped<IEventEmailHandler, EventEmailHandler>();
 
             // Services
             services.AddScoped<IPasswordService, PasswordService>();

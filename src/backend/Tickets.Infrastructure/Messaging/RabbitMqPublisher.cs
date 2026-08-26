@@ -18,7 +18,8 @@ namespace Tickets.Infrastructure.Messaging
 
         public async Task PublishAsync(
             string type,
-            string content)
+            string content,
+            string queueName)
         {
             var factory = new ConnectionFactory
             {
@@ -35,7 +36,7 @@ namespace Tickets.Infrastructure.Messaging
                 await connection.CreateChannelAsync();
 
             await channel.QueueDeclareAsync(
-                queue: _settings.QueueName,
+                queue: queueName,
                 durable: true,
                 exclusive: false,
                 autoDelete: false);
@@ -50,7 +51,7 @@ namespace Tickets.Infrastructure.Messaging
 
             await channel.BasicPublishAsync(
                 exchange: string.Empty,
-                routingKey: _settings.QueueName,
+                routingKey: queueName,
                 mandatory: true,
                 basicProperties: properties,
                 body: body);

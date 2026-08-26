@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Application.Interfaces.Messaging;
+using Tickets.Infrastructure.Messaging;
+using Tickets.Application.Events.Users;
 
 namespace Tickets.Infrastructure.Services.BackgroundServices
 {
@@ -43,7 +45,18 @@ namespace Tickets.Infrastructure.Services.BackgroundServices
                 {
                     try
                     {
-                        await publisher.PublishAsync(message.Type, message.Content);
+                        var queueName = message.Type switch
+                        {
+                            nameof(CreateUserEmailEvent)
+                            => MessagingQueues.WelcomeEmail,
+
+                            nameof(PasswordRecoveryEmailEvent)
+                            => MessagingQueues.PasswordRecoveryEmail,
+
+                            _=> throw new InvalidOperationException($"Unknown message type: {message.Type}")
+                        };
+
+                        await publisher.PublishAsync(message.Type, message.Content, queueName);
 
                         message.ProcessedAt = DateTime.UtcNow;
 

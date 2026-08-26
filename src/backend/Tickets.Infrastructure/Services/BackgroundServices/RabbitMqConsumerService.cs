@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Tickets.Application.Interfaces.Messaging;
+using Tickets.Infrastructure.Messaging;
 
 namespace Tickets.Infrastructure.Services.BackgroundServices
 {
@@ -25,7 +26,19 @@ namespace Tickets.Infrastructure.Services.BackgroundServices
 
             try
             {
-                await _consumer.StartAsync(stoppingToken);
+                var consumers = new[]
+                {
+                     _consumer.StartAsync( 
+                         MessagingQueues.WelcomeEmail, 
+                         stoppingToken),
+
+                     _consumer.StartAsync(
+                         MessagingQueues.PasswordRecoveryEmail,
+                         stoppingToken),
+                };
+
+                await Task.WhenAll(consumers);
+
             }
             catch (OperationCanceledException)
                 when (stoppingToken.IsCancellationRequested)

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Tickets.Application.Events.Users;
-using Tickets.Application.Handlers.PasswordRecoveryEmail;
+using Tickets.Application.Handlers.EventEmailHandler;
 using Tickets.Application.Interfaces.Messaging;
 using Tickets.Infrastructure.Settings;
 
@@ -27,7 +27,7 @@ namespace Tickets.Infrastructure.Messaging
         }
 
         public async Task StartAsync(
-            CancellationToken cancellationToken)
+            string queueName, CancellationToken cancellationToken)
         {
             var factory = new ConnectionFactory
             {
@@ -45,7 +45,7 @@ namespace Tickets.Infrastructure.Messaging
                     cancellationToken: cancellationToken);
 
             await channel.QueueDeclareAsync(
-                queue: _settings.QueueName,
+                queue: queueName,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
@@ -61,19 +61,28 @@ namespace Tickets.Infrastructure.Messaging
 
                     var message = Encoding.UTF8.GetString(body);
 
-                    var @event = JsonSerializer.Deserialize<PasswordRecoveryEmailEvent>(message);
+
+                    object? @event = queueName switch
+                    {
+                        MessagingQueues.WelcomeEmail
+                            => JsonSerializer.Deserialize<CreateUserEmailEvent>(message),
+
+                        MessagingQueues.PasswordRecoveryEmail
+                            => JsonSerializer.Deserialize<PasswordRecoveryEmailEvent>(message),
+
+                        _ => throw new InvalidOperationException($"Unknown message type: {queueName}")
+                    };
 
                     if (@event is null)
                     {
                         throw new InvalidOperationException(
-                            "Could not deserialize PasswordRecoveryEmailEvent.");
+                            $"Could not deserialize message from queue {queueName}.");
                     }
 
                     using var scope = _scopeFactory.CreateScope();
 
-                    var handler = scope.ServiceProvider.GetRequiredService<IPasswordRecoveryEmailHandler>();
-
-                    await handler.HandleAsync(@event, CancellationToken.None);
+                    var eventEmailHandler = scope.ServiceProvider.GetRequiredService<IEventEmailHandler>();
+                    await eventEmailHandler.HandleEventAsync(@event.GetType().Name, @event, cancellationToken);
 
                     await channel.BasicAckAsync(
                         args.DeliveryTag,
@@ -93,7 +102,7 @@ namespace Tickets.Infrastructure.Messaging
             };
 
             await channel.BasicConsumeAsync(
-                queue: _settings.QueueName,
+                queue: queueName,
                 autoAck: false,
                 consumer: consumer,
                 cancellationToken: cancellationToken);
