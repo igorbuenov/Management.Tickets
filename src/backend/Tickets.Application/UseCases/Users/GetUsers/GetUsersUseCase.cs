@@ -16,7 +16,7 @@ namespace Tickets.Application.UseCases.Users.GetUsers
             _userRepository = userRepository;
         }
 
-        public async Task<PagedResultDto<UserDto>> Execute(int page, int pageSize)
+        public async Task<PagedResultDto<UserDto>> Execute(int page = 1, int pageSize = 10)
         {
             if (page <= 0)
                 throw new ErrorOnValidationException("Page must be greater than 0");

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Tickets.Application.DTOs.Users;
+using Tickets.Application.Events.Users;
 using Tickets.Application.Interfaces;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
@@ -18,8 +19,8 @@ namespace Tickets.Application.UseCases.Users.CreateUser
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUser _currentUser;
         private readonly ILogger<CreateUserUseCase> _logger;
-        private readonly IUserEmailService _userEmailService;
         private readonly IValidator<CreateUserRequestDto> _validator;
+        private readonly IOutboxRepository _outboxRepository;
 
         public CreateUserUseCase(
             IUserRepository userRepository,
@@ -29,9 +30,9 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             IUserRoleRepository userRoleRepository,
             ICurrentUser currentUserService,
             ILogger<CreateUserUseCase> logger,
-            IUserEmailService userEmailService,
             IUserPasswordHistoryRepository userPasswordHistoryRepository,
-            IValidator<CreateUserRequestDto> validator)
+            IValidator<CreateUserRequestDto> validator,
+            IOutboxRepository outboxRepository)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -40,9 +41,9 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _userRoleRepository = userRoleRepository;
             _currentUser = currentUserService;
             _logger = logger;
-            _userEmailService = userEmailService;
             _userPasswordHistoryRepository = userPasswordHistoryRepository;
             _validator = validator;
+            _outboxRepository = outboxRepository;
         }
 
         public async Task<CreateUserResponseDto> Execute(CreateUserRequestDto request)
@@ -94,15 +95,25 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             await _userRoleRepository.Add(request.RoleID, user);
             _logger.LogInformation("Role {RoleId} assigned to user {UserId}", request.RoleID, user.Id);
 
-            await _unitOfWork.Commit();
-            _logger.LogInformation("Create user request completed successfully for {UserId}", user.Id);
 
-            // TODO: Implementar serviço de email - Enviar Email com a senha para o usuário
-            await _userEmailService.SendWelcomeEmailAsync(
+            var createUserEvent = new CreateUserEmailEvent(
                 user.Email,
                 user.Name,
                 password);
 
+
+            var outboxMessage = new OutboxMessage
+            {
+                Type = nameof(CreateUserEmailEvent),
+                Content = System.Text.Json.JsonSerializer.Serialize(createUserEvent),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _outboxRepository.Add(outboxMessage);
+
+            await _unitOfWork.Commit();
+
+            _logger.LogInformation("Create user request completed successfully for {UserId}", user.Id);
             return BuildResponse(user, request.RoleID);
         }
 

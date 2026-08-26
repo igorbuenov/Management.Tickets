@@ -16,6 +16,7 @@ namespace Tickets.WebAPI.Mappings.Users
             CreateMap<UserDto, UserResponseModel>();
             CreateMap<UpdateUserRequestModel, UpdateUserDto>();
             CreateMap<UpdatePasswordRequestModel, UpdatePasswordRequestDto>();
+            CreateMap<ForgotPasswordUserRequestModel, ForgotPasswordUserRequestDto>();
         }
     }
 }

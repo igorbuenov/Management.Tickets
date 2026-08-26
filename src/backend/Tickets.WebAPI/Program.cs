@@ -3,6 +3,7 @@ using Serilog.Sinks.MSSqlServer;
 using System.Data;
 using Tickets.Application;
 using Tickets.Infrastructure;
+using Tickets.Infrastructure.Services.BackgroundServices;
 using Tickets.WebAPI.Configuration;
 using Tickets.WebAPI.Configurations;
 

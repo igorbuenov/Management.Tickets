@@ -27,5 +27,19 @@ namespace Tickets.Infrastructure.Services.Email
 
             await _emailService.SendAsync(email, name, subject, html);
         }
+
+        public async Task SendPasswordResetEmailAsync(
+            string email,
+            string name,
+            string temporaryPassword)
+        {
+            var subject = "Redefinição de senha - Management Tickets";
+            var html = $@"
+                <h2>Olá {name}</h2>
+                <p>Você solicitou a redefinição de sua senha.</p>
+                <p><b>Senha temporária:</b> {temporaryPassword}</p>
+                <p>Essa senha deve ser alterada no primeiro acesso.</p>";
+            await _emailService.SendAsync(email, name, subject, html);
+        }
     }
 }
