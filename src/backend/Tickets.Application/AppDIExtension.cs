@@ -1,18 +1,20 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using Tickets.Application.Handlers.EventEmailHandler;
+using Tickets.Application.Interfaces;
 using Tickets.Application.Services;
 using Tickets.Application.UseCases.Auth;
+using Tickets.Application.UseCases.Tickets;
+using Tickets.Application.UseCases.Tickets.CreateTicket;
+using Tickets.Application.UseCases.Tickets.GetTickets;
+using Tickets.Application.UseCases.Users.ChangePassword;
 using Tickets.Application.UseCases.Users.CreateUser;
+using Tickets.Application.UseCases.Users.DeleteUser;
+using Tickets.Application.UseCases.Users.ForgotPassword;
 using Tickets.Application.UseCases.Users.GetUserById;
 using Tickets.Application.UseCases.Users.GetUsers;
 using Tickets.Application.UseCases.Users.UpdateUser;
-using Tickets.Application.Validators.Users;
-using FluentValidation;
-using System.Reflection;
-using Tickets.Application.UseCases.Users.DeleteUser;
-using Tickets.Application.Interfaces;
-using Tickets.Application.UseCases.Users.ChangePassword;
-using Tickets.Application.UseCases.Users.ForgotPassword;
-using Tickets.Application.Handlers.EventEmailHandler;
 
 namespace Tickets.Application
 {
@@ -29,6 +31,8 @@ namespace Tickets.Application
             services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
             services.AddScoped<IUpdatePasswordUseCase, UpdatePasswordUseCase>();
             services.AddScoped<IForgotPasswordUseCase, ForgotPasswordUseCase>();
+            services.AddScoped<IGetTicketsUseCase, GetTicketsUseCase>();
+            services.AddScoped<ICreateTicketUseCase, CreateTicketUseCase>();
 
             // Handlers
             services.AddScoped<IEventEmailHandler, EventEmailHandler>();

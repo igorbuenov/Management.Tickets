@@ -38,6 +38,7 @@ namespace Tickets.Infrastructure
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<IOutboxRepository, OutboxRepository>();
+            services.AddScoped<ITicketRepository, TicketRepository>();
 
             // Password Hashing
             services.AddScoped<IPasswordHasher, BCryptPasswordHashAlgorithm>();
