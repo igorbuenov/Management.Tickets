@@ -1,9 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using System.Data;
 using Tickets.Application;
 using Tickets.Infrastructure;
-using Tickets.Infrastructure.Services.BackgroundServices;
+using Tickets.Infrastructure.Data;
 using Tickets.WebAPI.Configuration;
 using Tickets.WebAPI.Configurations;
 
@@ -45,13 +46,33 @@ builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddJwtAuthentication(builder.Configuration)
     .AddSwaggerConfiguration()
-    .AddAutoMapperConfiguration();
+    .AddAutoMapperConfiguration()
+    .AddCors(options =>
+    {
+        options.AddPolicy("Angular", policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<TicketsDbContext>();
+
+    dbContext.Database.Migrate();
+}
 
 app.UseSwaggerConfiguration();
 
 app.UseHttpsRedirection();
+
+app.UseCors("Angular");
 
 app.UseAuthentication();
 app.UseAuthorization();

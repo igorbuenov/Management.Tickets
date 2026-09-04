@@ -6,6 +6,7 @@ using Tickets.Application.Events.Users;
 using Tickets.Application.Interfaces;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
+using Tickets.Exceptions.ExceptionBase;
 
 namespace Tickets.Application.UseCases.Users.ForgotPassword
 {
@@ -36,7 +37,7 @@ namespace Tickets.Application.UseCases.Users.ForgotPassword
             _logger.LogInformation("Executing forgot password use case for email: {Email}", request.Email);
             var user = await _userRepository.GetByEmail(request.Email);
             if (user == null)
-                throw new Exception("Se o email estiver registrado, você receberá instruções para redefinir sua senha.");
+                throw new BusinessRuleException("Se o email estiver registrado, você receberá instruções para redefinir sua senha.");
 
             string temporaryPassword = _passwordService.GenerateRandomPassword();
             string hashPassword = _passwordService.HashPassword(temporaryPassword);
