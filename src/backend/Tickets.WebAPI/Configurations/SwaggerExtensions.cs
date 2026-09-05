@@ -51,14 +51,14 @@ namespace Tickets.WebAPI.Configurations
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Tickets WebAPI v1");
-                    options.RoutePrefix = string.Empty;
-                });
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Tickets WebAPI v1");
+                options.RoutePrefix = string.Empty;
+            });
 
             return app;
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using System.Security.Authentication;
 using System.Text;
 using Tickets.Application.Interfaces.Messaging;
 using Tickets.Infrastructure.Settings;
@@ -26,7 +27,14 @@ namespace Tickets.Infrastructure.Messaging
                 HostName = _settings.Host,
                 Port = _settings.Port,
                 UserName = _settings.UserName,
-                Password = _settings.Password
+                Password = _settings.Password,
+                VirtualHost = _settings.VirtualHost,
+
+                Ssl = new SslOption
+                {
+                    Enabled = true,
+                    ServerName = _settings.Host,
+                }
             };
 
             await using var connection =
