@@ -1,11 +1,11 @@
-﻿using Tickets.Domain.Entities;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Tickets.Domain.Interfaces.Repositories;
-using Tickets.Application.Interfaces.Messaging;
-using Tickets.Infrastructure.Messaging;
+using RabbitMQ.Client.Exceptions;
 using Tickets.Application.Events.Users;
+using Tickets.Application.Interfaces.Messaging;
+using Tickets.Domain.Interfaces.Repositories;
+using Tickets.Infrastructure.Messaging;
 
 namespace Tickets.Infrastructure.Services.BackgroundServices
 {
@@ -61,6 +61,17 @@ namespace Tickets.Infrastructure.Services.BackgroundServices
                         message.ProcessedAt = DateTime.UtcNow;
 
                         _logger.LogInformation($"Outbox message {message.Id} published succefully.");
+                    }
+                    catch (OperationInterruptedException ex)
+                    {
+                        _logger.LogError(
+                            ex,
+                            $"Operation interrupted while processing outbox message {message.Id}. Attempt: {message.RetryCount}",
+                            message.Id,
+                            message.RetryCount);
+
+                        message.RetryCount++;
+                        message.Error = ex.Message;
                     }
                     catch (Exception ex)
                     {
