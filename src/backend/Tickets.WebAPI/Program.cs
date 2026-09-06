@@ -54,7 +54,7 @@ builder.Services
             policy
                 .WithOrigins(
                     "http://localhost:4200",
-                    "https://management-tickets-front-end.vercel.app/")
+                    "https://management-tickets-front-end.vercel.app")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
