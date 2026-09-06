@@ -52,7 +52,9 @@ builder.Services
         options.AddPolicy("Angular", policy =>
         {
             policy
-                .WithOrigins("http://localhost:4200")
+                .WithOrigins(
+                    "http://localhost:4200",
+                    "https://management-tickets-front-end.vercel.app/")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
