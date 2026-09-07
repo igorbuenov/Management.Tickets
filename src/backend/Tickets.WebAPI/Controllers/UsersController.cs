@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
-using Tickets.Application.Interfaces;
 using Tickets.Application.UseCases.Users.ChangePassword;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.DeleteUser;
-using Tickets.Application.UseCases.Users.ForgotPassword;
 using Tickets.Application.UseCases.Users.GetUserById;
 using Tickets.Application.UseCases.Users.GetUsers;
 using Tickets.Application.UseCases.Users.UpdateUser;
@@ -28,9 +26,9 @@ namespace Tickets.WebAPI.Controllers
         private readonly IUpdateUserUseCase _updateUserUseCase;
         private readonly IDeleteUserUseCase _deleteUserUseCase;
         private readonly IUpdatePasswordUseCase _updatePasswordUseCase;
-        private readonly IForgotPasswordUseCase _forgotPasswordUseCase;
+        
 
-        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase, IUpdatePasswordUseCase updatePasswordUseCase, IForgotPasswordUseCase forgotPasswordUseCase)
+        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase, IUpdatePasswordUseCase updatePasswordUseCase)
         {
             _mapper = mapper;
             _createUserUseCase = createUserUseCase;
@@ -39,7 +37,6 @@ namespace Tickets.WebAPI.Controllers
             _updateUserUseCase = updateUserUseCase;
             _deleteUserUseCase = deleteUserUseCase;
             _updatePasswordUseCase = updatePasswordUseCase;
-            _forgotPasswordUseCase = forgotPasswordUseCase;
         }
 
 
@@ -94,14 +91,5 @@ namespace Tickets.WebAPI.Controllers
             await _updatePasswordUseCase.Execute(_mapper.Map<UpdatePasswordRequestDto>(request), id);
             return NoContent();
         }
-
-
-        [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordUserRequestModel request)
-        {
-            await _forgotPasswordUseCase.Execute(_mapper.Map<ForgotPasswordUserRequestDto>(request));
-            return Ok("Se o email estiver registrado, você receberá instruções para redefinir sua senha.");
-        }
-
     }
 }

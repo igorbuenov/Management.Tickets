@@ -5,6 +5,7 @@ using System.Data;
 using Tickets.Application;
 using Tickets.Infrastructure;
 using Tickets.Infrastructure.Data;
+using Tickets.Infrastructure.Settings;
 using Tickets.WebAPI.Configuration;
 using Tickets.WebAPI.Configurations;
 
@@ -42,7 +43,7 @@ builder.Host.UseSerilog((context, services, configuration) =>
 
 builder.Services
     .AddControllersConfiguration()
-    .AddApplication()
+    .AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration)
     .AddJwtAuthentication(builder.Configuration)
     .AddSwaggerConfiguration()

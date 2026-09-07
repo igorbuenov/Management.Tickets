@@ -39,6 +39,7 @@ namespace Tickets.Infrastructure
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<IOutboxRepository, OutboxRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
 
             // Password Hashing
             services.AddScoped<IPasswordHasher, BCryptPasswordHashAlgorithm>();
@@ -54,7 +55,7 @@ namespace Tickets.Infrastructure
             // Settings
             services.Configure<RabbitMqSettings>(configuration.GetSection("RabbitMqSettings"));
             services.Configure<BrevoSettings>(configuration.GetSection("BrevoSettings"));
-
+            
             // Email Service
             services.AddHttpClient<IEmailService, BrevoEmailService>();
             services.AddScoped<IUserEmailService, UserEmailService>();

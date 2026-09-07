@@ -7,7 +7,7 @@ using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Exceptions.ExceptionBase;
 
-namespace Tickets.Application.UseCases.Auth
+namespace Tickets.Application.UseCases.Auth.UserLogin
 {
     public class AuthenticateUserUseCase : IAuthenticateUserUseCase
     {

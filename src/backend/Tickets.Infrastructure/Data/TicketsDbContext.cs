@@ -15,6 +15,7 @@ namespace Tickets.Infrastructure.Data
         public DbSet<UserPasswordHistory> UserPasswordHistories { get; set; }
         public DbSet<OutboxMessage> OutboxMessages { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -3,6 +3,6 @@
     public record PasswordRecoveryEmailEvent(
         string Email, 
         string Name, 
-        string TemporaryPassword);
+        string ResetLink);
     
 }

@@ -27,6 +27,13 @@ namespace Tickets.Infrastructure.Services.Email
 
         public async Task SendAsync(string toEmail, string toName, string subject, string htmlContent)
         {
+
+            Console.WriteLine("========== EMAIL ==========");
+            Console.WriteLine($"To: {toEmail}");
+            Console.WriteLine($"Subject: {subject}");
+            Console.WriteLine(htmlContent);
+            Console.WriteLine("===========================");
+
             var payload = new
             {
                 sender = new

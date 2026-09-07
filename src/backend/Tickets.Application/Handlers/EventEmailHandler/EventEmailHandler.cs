@@ -33,7 +33,7 @@ namespace Tickets.Application.Handlers.EventEmailHandler
                     await _userEmailService.SendPasswordResetEmailAsync(
                         passwordRecoverEvent.Email,
                         passwordRecoverEvent.Name,
-                        passwordRecoverEvent.TemporaryPassword);
+                        passwordRecoverEvent.ResetLink);
                     break;
 
                 default:
