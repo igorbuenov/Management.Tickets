@@ -13,6 +13,7 @@ namespace Tickets.WebAPI.Mappings.Auth
             CreateMap<LoginRequestModel, LoginRequestDto>();
             CreateMap<LoginResponseDto, LoginResponseModel>();
             CreateMap<LoginUserDto, LoginUserModel>();
+            CreateMap<ResetPasswordRequestModel, ResetPasswordRequestDto>();
         }
     }
 }

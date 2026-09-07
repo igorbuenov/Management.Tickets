@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Tickets;
 using Tickets.Application.UseCases.Tickets.CreateTicket;
@@ -24,6 +25,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateTicket([FromBody] CreateTicketRequestModel request)
         {
             var response =  _mapper.Map<CreateTicketResponseModel>(await _createTicketUseCase.Execute(_mapper.Map<CreateTicketRequestDto>(request)));
@@ -31,6 +33,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetTickets([FromQuery] GetTicketsRequestModel request)
         {
             var response = _mapper.Map<GetTicketsResponseModel>(await _getTicketsUseCase.Execute(request.Page, request.PageSize));

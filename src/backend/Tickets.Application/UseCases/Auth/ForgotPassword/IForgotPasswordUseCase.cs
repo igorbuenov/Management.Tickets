@@ -1,6 +1,6 @@
 ﻿using Tickets.Application.DTOs.Users;
 
-namespace Tickets.Application.UseCases.Users.ForgotPassword
+namespace Tickets.Application.UseCases.Auth.ForgotPassword
 {
     public interface IForgotPasswordUseCase
     {
