@@ -49,7 +49,7 @@ namespace Tickets.Application
 
             // Settings
             services.Configure<FrontendSettings>(
-                configuration.GetSection("Frontend"));
+                configuration.GetSection("FrontendSettings"));
 
             // Validators
             services.AddValidatorsFromAssembly(
