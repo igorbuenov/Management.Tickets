@@ -18,6 +18,7 @@ using Tickets.Application.UseCases.Users.GetUserById;
 using Tickets.Application.UseCases.Users.GetUsers;
 using Tickets.Application.UseCases.Users.UpdateUser;
 using Tickets.Application.Configurations;
+using Tickets.Application.UseCases.Users.ActiveUser;
 
 namespace Tickets.Application
 {
@@ -33,6 +34,7 @@ namespace Tickets.Application
             services.AddScoped<IGetUsersUseCase, GetUsersUseCase>();
             services.AddScoped<IGetUserByIdUseCase, GetUserByIdUseCase>();
             services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+            services.AddScoped<IActiveUserUseCase, ActiveUserUseCase>();
             services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
             services.AddScoped<IUpdatePasswordUseCase, UpdatePasswordUseCase>();
             services.AddScoped<IForgotPasswordUseCase, ForgotPasswordUseCase>();

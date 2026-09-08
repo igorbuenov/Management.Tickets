@@ -2,6 +2,8 @@
 {
     public class GetUsersRequestModel
     {
+        public string? Search { get; set; }
+        public bool? IsActive { get; set; }
         private const int MaxPageSize = 50;
         public int Page { get; set; } = 1;
         private int _pageSize = 10;

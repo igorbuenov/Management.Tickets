@@ -5,6 +5,6 @@ namespace Tickets.Application.UseCases.Users.GetUsers
 {
     public interface IGetUsersUseCase
     {
-        Task<PagedResultDto<UserDto>> Execute(int page, int pageSize);
+        Task<PagedResultDto<UserDto>> Execute(int page, int pageSize, string? search, bool? isActive);
     }
 }
