@@ -19,6 +19,7 @@ using Tickets.Application.UseCases.Users.GetUsers;
 using Tickets.Application.UseCases.Users.UpdateUser;
 using Tickets.Application.Configurations;
 using Tickets.Application.UseCases.Users.ActiveUser;
+using Tickets.Application.UseCases.Tickets.GetTicketById;
 
 namespace Tickets.Application
 {
@@ -41,6 +42,7 @@ namespace Tickets.Application
             services.AddScoped<IResetPasswordUseCase, ResetPasswordUseCase>();
             services.AddScoped<IGetTicketsUseCase, GetTicketsUseCase>();
             services.AddScoped<ICreateTicketUseCase, CreateTicketUseCase>();
+            services.AddScoped<IGetTicketByIdUseCase, GetTicketByIdUseCase>();
 
             // Handlers
             services.AddScoped<IEventEmailHandler, EventEmailHandler>();

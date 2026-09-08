@@ -11,5 +11,9 @@
             get => _pageSize;
             set => _pageSize = value > MaxPageSize ? MaxPageSize : value;
         }
+
+        public string? Title { get; set; }
+        public int? Priority { get; set; }
+        public int? Status { get; set; }
     }
 }
