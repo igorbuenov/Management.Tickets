@@ -1,16 +1,18 @@
-﻿using Tickets.Domain.Enums;
+﻿using Tickets.WebAPI.Models.Users;
 
 namespace Tickets.WebAPI.Models.Tickets
 {
     public class TicketModel
     {
+        public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Priority { get; set; }
         public string Status { get; set; }
-        public int CreatedByUserId { get; set; }
-        public int? AssignedToUserId { get; set; }
+
+        public UserSummaryModel CreatedBy { get; set; }
+        public UserSummaryModel? AssignedTo { get; set; }
     }
 }

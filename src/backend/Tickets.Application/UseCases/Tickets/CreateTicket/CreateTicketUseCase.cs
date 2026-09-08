@@ -1,4 +1,5 @@
 ﻿using Tickets.Application.DTOs.Tickets;
+using Tickets.Application.DTOs.Users;
 using Tickets.Application.Interfaces;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Enums;
@@ -41,7 +42,9 @@ namespace Tickets.Application.UseCases.Tickets.CreateTicket
             await _ticketRepository.AddAsync(ticket);
             await _unitOfWork.Commit();
 
-            return BuildResponse(ticket);
+            var createdTicket = await _ticketRepository.GetById(ticket.Id);
+
+            return BuildResponse(createdTicket);
         }
 
         public CreateTicketResponseDto BuildResponse(Ticket ticket)
@@ -57,8 +60,18 @@ namespace Tickets.Application.UseCases.Tickets.CreateTicket
                     Status = ticket.Status.ToString(),
                     CreatedAt = ticket.CreatedAt,
                     UpdatedAt = ticket.UpdatedAt,
-                    CreatedByUserId = ticket.CreatedByUserId,
-                    AssignedToUserId = ticket.AssignedToUserId
+                    CreatedBy = new UserSummaryDto
+                    {
+                        Id = ticket.CreatedByUser.Id,
+                        Name = ticket.CreatedByUser.Name
+                    },
+                    AssignedTo = ticket.AssignedToUser == null
+                    ? null
+                    : new UserSummaryDto
+                    {
+                        Id = ticket.AssignedToUser.Id,
+                        Name = ticket.AssignedToUser.Name
+                    }
                 }
             };
         }
