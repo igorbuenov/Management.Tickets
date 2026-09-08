@@ -34,21 +34,49 @@ namespace Tickets.Infrastructure.Repositories
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<IEnumerable<User>> GetPaged(int page, int pageSize)
+        public async Task<IEnumerable<User>> GetPaged(int page, int pageSize, string? search, bool? isActive)
         {
-            return await _context.Users
+            var query = _context.Users
                 .AsNoTracking()
-                .Where(u => u.IsActive)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(u =>
+                    u.Name.Contains(search) ||
+                    u.Email.Contains(search));
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(u => u.IsActive == isActive.Value);
+            }
+
+
+            return await query
                 .OrderBy(u => u.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
-        public async Task<int> Count()
+        public async Task<int> Count(string? search, bool? isActive)
         {
-            return await _context.Users
-            .Where(u => u.IsActive)
-            .CountAsync();
+            var query = _context.Users
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(u =>
+                    u.Name.Contains(search) ||
+                    u.Email.Contains(search));
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(u => u.IsActive == isActive.Value);
+            }
+
+            return await query.CountAsync();
         }
 
         public async Task<User> GetById(int id)

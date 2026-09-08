@@ -8,8 +8,8 @@ namespace Tickets.Domain.Interfaces.Repositories
         Task<bool> ExistActiveUserWithEmail(string email);
         Task<User> GetByEmail(string email);
         Task<IEnumerable<User>> GetAllAsync();
-        Task<IEnumerable<User>> GetPaged(int page, int pageSize);
-        Task<int> Count();
+        Task<IEnumerable<User>> GetPaged(int page, int pageSize, string? search, bool? isActive);
+        Task<int> Count(string? search, bool? isActive);
         Task<User> GetById(int id);
     }
 }

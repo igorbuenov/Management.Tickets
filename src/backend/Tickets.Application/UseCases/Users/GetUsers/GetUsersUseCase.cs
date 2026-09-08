@@ -16,7 +16,7 @@ namespace Tickets.Application.UseCases.Users.GetUsers
             _userRepository = userRepository;
         }
 
-        public async Task<PagedResultDto<UserDto>> Execute(int page = 1, int pageSize = 10)
+        public async Task<PagedResultDto<UserDto>> Execute(int page = 1, int pageSize = 10, string? search = null, bool? isActive = null)
         {
             if (page <= 0)
                 throw new ErrorOnValidationException("Page must be greater than 0");
@@ -24,11 +24,8 @@ namespace Tickets.Application.UseCases.Users.GetUsers
             if (pageSize <= 0)
                 throw new ErrorOnValidationException("PageSize must be greater than 0");
 
-            var users = await _userRepository.GetPaged(page, pageSize);
-            if (users == null || !users.Any())
-                throw new NotFoundException("No users found for the given page and page size");
-
-            var total = await _userRepository.Count();
+            var users = await _userRepository.GetPaged(page, pageSize, search, isActive);
+            var total = await _userRepository.Count(search, isActive);
 
             return BuildResponse(users, page, pageSize, total);
         }

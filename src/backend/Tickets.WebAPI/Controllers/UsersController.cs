@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
+using Tickets.Application.UseCases.Users.ActiveUser;
 using Tickets.Application.UseCases.Users.ChangePassword;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.DeleteUser;
@@ -26,9 +27,10 @@ namespace Tickets.WebAPI.Controllers
         private readonly IUpdateUserUseCase _updateUserUseCase;
         private readonly IDeleteUserUseCase _deleteUserUseCase;
         private readonly IUpdatePasswordUseCase _updatePasswordUseCase;
-        
+        private readonly IActiveUserUseCase _activeUserUseCase;
 
-        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase, IUpdatePasswordUseCase updatePasswordUseCase)
+
+        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase, IUpdatePasswordUseCase updatePasswordUseCase, IActiveUserUseCase activeUserUseCase)
         {
             _mapper = mapper;
             _createUserUseCase = createUserUseCase;
@@ -37,6 +39,7 @@ namespace Tickets.WebAPI.Controllers
             _updateUserUseCase = updateUserUseCase;
             _deleteUserUseCase = deleteUserUseCase;
             _updatePasswordUseCase = updatePasswordUseCase;
+            _activeUserUseCase = activeUserUseCase;
         }
 
 
@@ -52,7 +55,7 @@ namespace Tickets.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] GetUsersRequestModel request)
         {
-            var response = _mapper.Map<GetUsersResponseModel<UserDto>>(await _getUsersUseCase.Execute(request.Page, request.PageSize));
+            var response = _mapper.Map<GetUsersResponseModel<UserDto>>(await _getUsersUseCase.Execute(request.Page, request.PageSize, request.Search, request.IsActive));
             return Ok(response);
         }
 
@@ -81,6 +84,14 @@ namespace Tickets.WebAPI.Controllers
         public async Task<IActionResult> DeleteUser(int id)
         {
             await _deleteUserUseCase.Execute(id);
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> ActiveUser(int id)
+        {
+            await _activeUserUseCase.Execute(id);
             return NoContent();
         }
 
