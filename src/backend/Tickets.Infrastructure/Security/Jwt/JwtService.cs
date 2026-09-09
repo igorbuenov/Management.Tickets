@@ -36,7 +36,7 @@ namespace Tickets.Infrastructure.Security.Jwt
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expiresAt = DateTime.UtcNow.AddMinutes(_settings.ExpirationMinutes);
+            var expiresAt = DateTime.Now.AddMinutes(_settings.ExpirationMinutes);
 
             var token = new JwtSecurityToken(
                 issuer: _settings.Issuer,

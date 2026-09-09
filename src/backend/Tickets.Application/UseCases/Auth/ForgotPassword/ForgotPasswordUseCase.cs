@@ -54,9 +54,9 @@ namespace Tickets.Application.UseCases.Auth.ForgotPassword
             var passwordResetToken = new PasswordResetToken
             {
                 TokenHash = tokenHash,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(30),
+                ExpiresAt = DateTime.Now.AddMinutes(30),
                 UserId = user.Id,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _passwordResetTokenRepository.Add(passwordResetToken);
@@ -73,7 +73,7 @@ namespace Tickets.Application.UseCases.Auth.ForgotPassword
             {
                 Type = nameof(PasswordRecoveryEmailEvent),
                 Content = JsonSerializer.Serialize(passwordRecoveryEvent),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _outboxRepository.Add(outboxMessage);

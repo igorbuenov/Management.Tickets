@@ -49,12 +49,12 @@ namespace Tickets.Application.UseCases.Users.ActiveUser
             if (user.Id == _currentUser.UserId)
             {
                 _logger.LogWarning("Business rule violation: user {Actor} attempted to activate themselves", actor);
-                throw new BusinessRuleException("Users cannot delete themselves.");
+                throw new BusinessRuleException("Users cannot activate themselves.");
             }
 
             if (user.IsActive)
             {
-                _logger.LogWarning("Business rule violation: user {TargetUserId} is already active. Requested by {Actor}", id, actor);
+                _logger.LogWarning("Business rule violation: user {Actor} attempted to activate themselves", actor);
                 throw new BusinessRuleException($"User with id {id} is already active.");
             }
 

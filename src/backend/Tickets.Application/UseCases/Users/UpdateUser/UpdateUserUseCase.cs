@@ -42,7 +42,7 @@ namespace Tickets.Application.UseCases.Users.UpdateUser
                 if (_currentUser.UserId != request.Id)
                 {
                     _logger.LogWarning("User {CurrentUserId} attempted to update user {TargetUserId} without permission", _currentUser.UserId, request.Id);
-                    throw new ErrorOnValidationException("Você não tem permissão para alterar este usuário");
+                    throw new ForbiddenException("Você não tem permissão para alterar este usuário");
                 }
             }
 

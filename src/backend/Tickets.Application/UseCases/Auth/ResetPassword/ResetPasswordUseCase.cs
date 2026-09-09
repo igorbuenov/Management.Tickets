@@ -46,7 +46,7 @@ namespace Tickets.Application.UseCases.Auth.ResetPassword
             if (passwordResetToken.UsedAt.HasValue)
                 throw new BusinessRuleException("Invalid or expired password reset token.");
 
-            if (passwordResetToken.ExpiresAt <= DateTime.UtcNow)
+            if (passwordResetToken.ExpiresAt <= DateTime.Now)
                 throw new BusinessRuleException("Invalid or expired password reset token.");
 
             var userPassword = await _userPasswordRepository.GetByUserId(passwordResetToken.UserId);
@@ -58,19 +58,19 @@ namespace Tickets.Application.UseCases.Auth.ResetPassword
 
             userPassword.Update(
                 passwordHash,
-                DateTime.UtcNow.AddDays(PasswordPolicy.ExpirationDays),
+                DateTime.Now.AddDays(PasswordPolicy.ExpirationDays),
                 passwordResetToken.UserId);
 
             var passwordHistory = new UserPasswordHistory
             {
                 UserId = passwordResetToken.UserId,
                 HashPassword = passwordHash,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
             };
 
             await _userPasswordHistoryRepository.Add(passwordHistory);
 
-            passwordResetToken.UsedAt = DateTime.UtcNow;
+            passwordResetToken.UsedAt = DateTime.Now;
 
             await _unitOfWork.Commit();
 

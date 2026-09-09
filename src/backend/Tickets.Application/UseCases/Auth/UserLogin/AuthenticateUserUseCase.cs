@@ -43,7 +43,7 @@ namespace Tickets.Application.UseCases.Auth.UserLogin
 
             ValidateRequest(request);
 
-            var user = await ValidateCredentials(request);
+            var (user, mustChangePassword) = await ValidateCredentials(request);
 
             var roles = await _userRoleRepository.GetRolesByUserId(user.Id);
 
@@ -54,7 +54,7 @@ namespace Tickets.Application.UseCases.Auth.UserLogin
                 user.Id,
                 string.Join(",", roles));
 
-            return Response(token, user, roles);
+            return Response(token, user, mustChangePassword, roles);
         }
 
         private void ValidateRequest(LoginRequestDto request)
@@ -70,7 +70,7 @@ namespace Tickets.Application.UseCases.Auth.UserLogin
             }
         }
 
-        private async Task<User> ValidateCredentials(LoginRequestDto request)
+        private async Task<(User user, bool mustChangePassword)> ValidateCredentials(LoginRequestDto request)
         {
 
             _logger.LogInformation("Validating credentials user request for {Email}", request.Email);
@@ -97,6 +97,12 @@ namespace Tickets.Application.UseCases.Auth.UserLogin
 
             var password = await _passwordRepository.GetByUserId(user.Id);
 
+            bool mustChangePassword = false;
+            if(password.ExpirationDate < DateTime.UtcNow)
+            {
+                mustChangePassword = true;
+            }
+
             bool validPassword = _passwordService.VerifyPassword(request.Password, password.HashPassword);
 
             if (!validPassword)
@@ -107,15 +113,16 @@ namespace Tickets.Application.UseCases.Auth.UserLogin
 
             _logger.LogInformation("Credentials validated for user {UserId}", user.Id);
 
-            return user;
+            return (user, mustChangePassword);
         }
 
-        private LoginResponseDto Response(JsonTokenResultDto token, User user, IEnumerable<Role> roles)
+        private LoginResponseDto Response(JsonTokenResultDto token, User user, bool mustChangePassword, IEnumerable<Role> roles)
         {
             return new LoginResponseDto
             {
                 AccessToken = token.AccessToken,
                 ExpiresAt = token.ExpiresAt,
+                MustChangePassword = mustChangePassword,
                 User = new LoginUserDto
                 {
                     Id = user.Id,

@@ -58,7 +58,7 @@ namespace Tickets.Infrastructure.Services.BackgroundServices
 
                         await publisher.PublishAsync(message.Type, message.Content, queueName);
 
-                        message.ProcessedAt = DateTime.UtcNow;
+                        message.ProcessedAt = DateTime.Now;
 
                         _logger.LogInformation($"Outbox message {message.Id} published succefully.");
                     }
