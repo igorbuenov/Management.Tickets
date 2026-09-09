@@ -1,26 +1,31 @@
-﻿
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Tickets.Application.Commons.Security;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.Interfaces;
+using Tickets.Application.UseCases.Users.ChangePassword;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Exceptions.ExceptionBase;
 
-namespace Tickets.Application.UseCases.Users.ChangePassword
+namespace Tickets.Application.UseCases.Users.ChangeTemporaryPassword
 {
-    public class UpdatePasswordUseCase : IUpdatePasswordUseCase
+    public class ChangeTemporaryPasswordUseCase : IChangeTemporaryPasswordUseCase
     {
         private readonly ICurrentUser _currentUser;
         private readonly IPasswordService _passwordService;
         private readonly IPasswordRepository _passwordRepository;
         private readonly IUserPasswordHistoryRepository _userPasswordHistoryRepository;
-        private readonly IValidator<UpdatePasswordRequestDto> _validator;
-        private readonly ILogger<UpdatePasswordUseCase> _logger;
+        private readonly IValidator<ChangeTemporaryPasswordRequestDto> _validator;
+        private readonly ILogger<ChangeTemporaryPasswordRequestDto> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdatePasswordUseCase(ICurrentUser currentUser, IPasswordService passwordService, IPasswordRepository passwordRepository, IUserPasswordHistoryRepository userPasswordHistoryRepository, IValidator<UpdatePasswordRequestDto> validator, ILogger<UpdatePasswordUseCase> logger, IUnitOfWork unitOfWork)
+        public ChangeTemporaryPasswordUseCase(ICurrentUser currentUser, IPasswordService passwordService, IPasswordRepository passwordRepository, IUserPasswordHistoryRepository userPasswordHistoryRepository, IValidator<ChangeTemporaryPasswordRequestDto> validator, ILogger<ChangeTemporaryPasswordRequestDto> logger, IUnitOfWork unitOfWork)
         {
             _currentUser = currentUser;
             _passwordService = passwordService;
@@ -31,52 +36,45 @@ namespace Tickets.Application.UseCases.Users.ChangePassword
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Execute(UpdatePasswordRequestDto request, int userId)
+
+        public async Task Execute(ChangeTemporaryPasswordRequestDto request, int id)
         {
-            if (userId != _currentUser.UserId)
+            if (id != _currentUser.UserId)
             {
                 throw new ForbiddenException("You can only change your own password.");
             }
 
             ValidateRequest(request);
 
-            var currentPassword = await _passwordRepository.GetByUserId(userId);
+            var currentPassword = await _passwordRepository.GetByUserId(id);
             if (currentPassword is null)
-            {
                 throw new NotFoundException("Current password record not found for the user.");
-            }
 
-            if (!_passwordService.VerifyPassword(request.CurrentPassword, currentPassword.HashPassword))
-            {
-                throw new ErrorOnValidationException("Incorrect password.");
-            }
+            if (currentPassword.ExpirationDate >= DateTime.Now)
+                throw new BusinessRuleException("Password change is not required.");
 
-            await ValidatePasswordHistory(request, userId);
+            await ValidatePasswordHistory(request, id);
 
             var newHashPassword = _passwordService.HashPassword(request.NewPassword);
 
             currentPassword.Update(
-                newHashPassword, 
-                DateTime.Now.AddDays(PasswordPolicy.ExpirationDays), 
-                userId);
-
-            _logger.LogInformation("Password record updated for user {UserId} (expiration: {Expiration})", userId, currentPassword.ExpirationDate);
+                newHashPassword,
+                DateTime.Now.AddDays(PasswordPolicy.ExpirationDays),
+                id);
 
             UserPasswordHistory passwordHistory = new UserPasswordHistory
             {
-                UserId = userId,
+                UserId = id,
                 HashPassword = newHashPassword,
                 CreatedAt = DateTime.Now
             };
 
-            _logger.LogInformation("Adding password history record for user {UserId}", userId);
+            _logger.LogInformation("Adding password history record for user {UserId}", id);
             await _userPasswordHistoryRepository.Add(passwordHistory);
 
             await _unitOfWork.Commit();
-
         }
-
-        private void ValidateRequest(UpdatePasswordRequestDto request)
+        private void ValidateRequest(ChangeTemporaryPasswordRequestDto request)
         {
             var result = _validator.Validate(request);
             if (!result.IsValid)
@@ -85,7 +83,7 @@ namespace Tickets.Application.UseCases.Users.ChangePassword
             }
         }
 
-        private async Task ValidatePasswordHistory(UpdatePasswordRequestDto request, int userId)
+        private async Task ValidatePasswordHistory(ChangeTemporaryPasswordRequestDto request, int userId)
         {
 
             List<UserPasswordHistory> userPasswordHistories = await _userPasswordHistoryRepository.GetByUserIdForValidateOnChangePassword(userId);

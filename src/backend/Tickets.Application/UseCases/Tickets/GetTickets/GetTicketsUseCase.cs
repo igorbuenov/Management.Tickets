@@ -5,6 +5,7 @@ using Tickets.Application.DTOs.Users;
 using Tickets.Application.UseCases.Tickets.GetTickets;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
+using Tickets.Exceptions.ExceptionBase;
 
 namespace Tickets.Application.UseCases.Tickets
 {
@@ -22,10 +23,10 @@ namespace Tickets.Application.UseCases.Tickets
         {
 
             if (page <= 0)
-                throw new ArgumentException("Page must be greater than 0");
+                throw new ErrorOnValidationException("Page must be greater than 0");
 
             if (pageSize <= 0)
-                throw new ArgumentException("PageSize must be greater than 0");
+                throw new ErrorOnValidationException("PageSize must be greater than 0");
 
             var tickets = await _ticketRepository.GetPaged(page, pageSize, title, priority, status);
             

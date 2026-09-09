@@ -20,6 +20,7 @@ using Tickets.Application.UseCases.Users.UpdateUser;
 using Tickets.Application.Configurations;
 using Tickets.Application.UseCases.Users.ActiveUser;
 using Tickets.Application.UseCases.Tickets.GetTicketById;
+using Tickets.Application.UseCases.Users.ChangeTemporaryPassword;
 
 namespace Tickets.Application
 {
@@ -38,6 +39,7 @@ namespace Tickets.Application
             services.AddScoped<IActiveUserUseCase, ActiveUserUseCase>();
             services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
             services.AddScoped<IUpdatePasswordUseCase, UpdatePasswordUseCase>();
+            services.AddScoped<IChangeTemporaryPasswordUseCase, ChangeTemporaryPasswordUseCase>();
             services.AddScoped<IForgotPasswordUseCase, ForgotPasswordUseCase>();
             services.AddScoped<IResetPasswordUseCase, ResetPasswordUseCase>();
             services.AddScoped<IGetTicketsUseCase, GetTicketsUseCase>();

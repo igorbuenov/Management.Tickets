@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using Tickets.Infrastructure.Security.Jwt;
 
 namespace Tickets.WebAPI.Configuration;
@@ -37,6 +38,42 @@ public static class AuthenticationExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(key),
 
                     //RoleClaimType = ClaimTypes.Role
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized; 
+                        context.Response.ContentType = "application/json"; 
+                        var response = new 
+                        { 
+                            success = false, 
+                            errors = new[] 
+                            { 
+                                "Authentication is required." 
+                            } 
+                        }; 
+                        
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                    },
+
+                    OnForbidden = async context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden; 
+                        context.Response.ContentType = "application/json"; 
+                        var response = new 
+                        { 
+                            success = false, 
+                            errors = new[] 
+                            { 
+                                "You do not have permission to access this resource." 
+                            } 
+                        }; 
+                        
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                    }
                 };
             });
 

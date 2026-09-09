@@ -30,12 +30,12 @@ namespace Tickets.Application.UseCases.Tickets.CreateTicket
                 Description = dto.Description,
                 Priority = dto.Priority,
                 Status = TicketStatus.Open,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
             
             var userId = _currentUser.UserId;
             if (userId == null)
-                throw new BusinessRuleException("User is not authenticated.");
+                throw new UnauthorizedException("User must be authenticated to create tickets.");
 
             ticket.CreatedByUserId = (int) userId!;
 

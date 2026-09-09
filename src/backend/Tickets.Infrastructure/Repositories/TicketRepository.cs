@@ -21,7 +21,10 @@ namespace Tickets.Infrastructure.Repositories
 
         public async Task<IEnumerable<Ticket>> GetPaged(int page, int pageSize, string? title, int? priority, int? status)
         {
-            var query = _context.Tickets.Include(ticket => ticket.CreatedByUser).Include(ticket => ticket.AssignedToUser).AsQueryable(); 
+            var query = _context.Tickets
+                .Include(ticket => ticket.CreatedByUser)
+                .Include(ticket => ticket.AssignedToUser)
+                .AsQueryable(); 
 
             if (!string.IsNullOrWhiteSpace(title)) 
             { 
@@ -38,7 +41,11 @@ namespace Tickets.Infrastructure.Repositories
                 query = query.Where(ticket => (int)ticket.Status == status.Value); 
             }
 
-            return await query.OrderBy(t => t.Id).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return await query
+                .OrderByDescending(t => t.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<int> Count(string? title, int? priority, int? status)
@@ -47,17 +54,20 @@ namespace Tickets.Infrastructure.Repositories
 
             if (!string.IsNullOrWhiteSpace(title)) 
             { 
-                query = query.Where(ticket => ticket.Title.Contains(title)); 
+                query = query
+                    .Where(ticket => ticket.Title.Contains(title)); 
             }
 
             if (priority.HasValue) 
             { 
-                query = query.Where(ticket => (int)ticket.Priority == priority.Value); 
+                query = query
+                    .Where(ticket => (int)ticket.Priority == priority.Value); 
             }
 
             if (status.HasValue) 
             { 
-                query = query.Where(ticket => (int)ticket.Status == status.Value);
+                query = query
+                    .Where(ticket => (int)ticket.Status == status.Value);
             }
 
             return await query.CountAsync();

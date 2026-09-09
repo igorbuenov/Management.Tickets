@@ -21,7 +21,7 @@
             HashPassword = hashPassword;
             ExpirationDate = expirationDate;
             CreatedByUserId = createdByUserId;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
         }
 
 

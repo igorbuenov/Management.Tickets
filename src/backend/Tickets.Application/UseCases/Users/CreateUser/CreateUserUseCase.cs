@@ -74,7 +74,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             {
                 User = user,
                 HashPassword = hashPassword,
-                ExpirationDate = DateTime.UtcNow,
+                ExpirationDate = DateTime.Now,
                 CreatedByUserId = currentUserId
             };
 
@@ -106,7 +106,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             {
                 Type = nameof(CreateUserEmailEvent),
                 Content = System.Text.Json.JsonSerializer.Serialize(createUserEvent),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _outboxRepository.Add(outboxMessage);

@@ -6,6 +6,7 @@ namespace Tickets.WebAPI.Models.Auth.Response
     {
         public string AccessToken { get; set; }
         public DateTime ExpiresAt { get; set; }
+        public bool MustChangePassword { get; set; }
         public LoginUserModel User { get; set; }
     }
 }

@@ -17,7 +17,7 @@
             if (!IsActive)
                 return;
 
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
             IsActive = false;
         }
 
@@ -26,7 +26,7 @@
             if (IsActive)
                 return;
 
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
             IsActive = true;
         }
 
@@ -34,7 +34,7 @@
         {
             Name = name;
             Email = email;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.UseCases.Users.ActiveUser;
 using Tickets.Application.UseCases.Users.ChangePassword;
+using Tickets.Application.UseCases.Users.ChangeTemporaryPassword;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.DeleteUser;
 using Tickets.Application.UseCases.Users.GetUserById;
@@ -28,9 +29,10 @@ namespace Tickets.WebAPI.Controllers
         private readonly IDeleteUserUseCase _deleteUserUseCase;
         private readonly IUpdatePasswordUseCase _updatePasswordUseCase;
         private readonly IActiveUserUseCase _activeUserUseCase;
+        private readonly IChangeTemporaryPasswordUseCase _changeTemporaryPasswordUseCase;
 
 
-        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase, IUpdatePasswordUseCase updatePasswordUseCase, IActiveUserUseCase activeUserUseCase)
+        public UsersController(IMapper mapper, ICreateUserUseCase createUserUseCase, IGetUsersUseCase getUsersUseCase, IGetUserByIdUseCase getUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IDeleteUserUseCase deleteUserUseCase, IUpdatePasswordUseCase updatePasswordUseCase, IActiveUserUseCase activeUserUseCase, IChangeTemporaryPasswordUseCase changeTemporaryPasswordUseCase)
         {
             _mapper = mapper;
             _createUserUseCase = createUserUseCase;
@@ -40,6 +42,7 @@ namespace Tickets.WebAPI.Controllers
             _deleteUserUseCase = deleteUserUseCase;
             _updatePasswordUseCase = updatePasswordUseCase;
             _activeUserUseCase = activeUserUseCase;
+            _changeTemporaryPasswordUseCase = changeTemporaryPasswordUseCase;
         }
 
 
@@ -100,6 +103,14 @@ namespace Tickets.WebAPI.Controllers
         public async Task<IActionResult> UpdatePassword(int id, [FromBody] UpdatePasswordRequestModel request)
         {
             await _updatePasswordUseCase.Execute(_mapper.Map<UpdatePasswordRequestDto>(request), id);
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("{id:int}/change-temporary-password")]
+        public async Task<IActionResult> ChangeTemporaryPassword(int id, [FromBody] ChangeTemporaryPasswordRequestModel request)
+        {
+            await _changeTemporaryPasswordUseCase.Execute(_mapper.Map<ChangeTemporaryPasswordRequestDto>(request), id);
             return NoContent();
         }
     }

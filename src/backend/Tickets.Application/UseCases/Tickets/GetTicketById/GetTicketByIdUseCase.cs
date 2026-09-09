@@ -22,16 +22,22 @@ namespace Tickets.Application.UseCases.Tickets.GetTicketById
 
         public async Task<TicketDto> Execute(int id)
         {
-            _logger.LogInformation("Get user by id request started for {UserId}", id);
+            _logger.LogInformation("Get ticket by id request started for {TicketId}", id);
 
             if (id <= 0)
             {
-                _logger.LogWarning("Validation failed for GetUserById: invalid user ID {UserId}", id);
-                throw new ErrorOnValidationException("Invalid user ID");
+                _logger.LogWarning("Validation failed for GetTicketById: invalid ticket ID {UserId}", id);
+                throw new ErrorOnValidationException("Invalid ticket ID");
             }
 
             var ticket = await _ticketRepository.GetById(id);
+            if (ticket is null)
+            {
+                _logger.LogWarning("Ticket with ID {TicketId} not found.",id);
+                throw new NotFoundException($"Ticket with ID {id} not found.");
+            }
 
+            _logger.LogInformation("Ticket with ID {TicketId} retrieved successfully.",id);
             return BuildResponse(ticket);
             
         }
