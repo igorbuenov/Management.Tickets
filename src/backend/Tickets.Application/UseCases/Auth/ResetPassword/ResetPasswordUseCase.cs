@@ -1,4 +1,5 @@
-﻿using Tickets.Application.Commons.Security;
+﻿using FluentValidation;
+using Tickets.Application.Commons.Security;
 using Tickets.Application.DTOs.Auth;
 using Tickets.Application.Interfaces;
 using Tickets.Domain.Entities;
@@ -16,6 +17,7 @@ namespace Tickets.Application.UseCases.Auth.ResetPassword
         private readonly IUserPasswordHistoryRepository _userPasswordHistoryRepository;
         private readonly IPasswordResetTokenService _passwordResetTokenService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IValidator<ResetPasswordRequestDto> _resetPasswordValidator;
 
         public ResetPasswordUseCase(
             IPasswordResetTokenRepository passwordResetTokenRepository,
@@ -23,7 +25,8 @@ namespace Tickets.Application.UseCases.Auth.ResetPassword
             IPasswordRepository userPasswordRepository,
             IUserPasswordHistoryRepository userPasswordHistoryRepository,
             IPasswordResetTokenService passwordResetTokenService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IValidator<ResetPasswordRequestDto> resetPasswordValidator)
         {
             _passwordResetTokenRepository = passwordResetTokenRepository;
             _passwordService = passwordService;
@@ -31,10 +34,16 @@ namespace Tickets.Application.UseCases.Auth.ResetPassword
             _userPasswordHistoryRepository = userPasswordHistoryRepository;
             _passwordResetTokenService = passwordResetTokenService;
             _unitOfWork = unitOfWork;
+            _resetPasswordValidator = resetPasswordValidator;
         }
 
         public async Task Execute(ResetPasswordRequestDto request)
         {
+            // Validar senha
+            var result = _resetPasswordValidator.Validate(request);
+            if (!result.IsValid)
+                throw new ErrorOnValidationException(result.Errors.Select(e => e.ErrorMessage).ToList());
+            
             var tokenHash = _passwordResetTokenService.HashToken(request.Token);
 
             var passwordResetToken =
