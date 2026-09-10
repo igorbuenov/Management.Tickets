@@ -40,6 +40,8 @@ namespace Tickets.Infrastructure
             services.AddScoped<IOutboxRepository, OutboxRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
             services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             // Password Hashing
             services.AddScoped<IPasswordHasher, BCryptPasswordHashAlgorithm>();

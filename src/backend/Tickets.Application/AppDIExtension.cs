@@ -2,25 +2,29 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Tickets.Application.Configurations;
 using Tickets.Application.Handlers.EventEmailHandler;
 using Tickets.Application.Interfaces;
 using Tickets.Application.Services;
 using Tickets.Application.UseCases.Auth.ForgotPassword;
 using Tickets.Application.UseCases.Auth.ResetPassword;
 using Tickets.Application.UseCases.Auth.UserLogin;
+using Tickets.Application.UseCases.Categories.CreateCategory;
+using Tickets.Application.UseCases.Categories.GetCategories;
+using Tickets.Application.UseCases.Departments.CreateDepartment;
+using Tickets.Application.UseCases.Departments.GetDepartments;
 using Tickets.Application.UseCases.Tickets;
 using Tickets.Application.UseCases.Tickets.CreateTicket;
+using Tickets.Application.UseCases.Tickets.GetTicketById;
 using Tickets.Application.UseCases.Tickets.GetTickets;
+using Tickets.Application.UseCases.Users.ActiveUser;
 using Tickets.Application.UseCases.Users.ChangePassword;
+using Tickets.Application.UseCases.Users.ChangeTemporaryPassword;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.DeleteUser;
 using Tickets.Application.UseCases.Users.GetUserById;
 using Tickets.Application.UseCases.Users.GetUsers;
 using Tickets.Application.UseCases.Users.UpdateUser;
-using Tickets.Application.Configurations;
-using Tickets.Application.UseCases.Users.ActiveUser;
-using Tickets.Application.UseCases.Tickets.GetTicketById;
-using Tickets.Application.UseCases.Users.ChangeTemporaryPassword;
 
 namespace Tickets.Application
 {
@@ -45,6 +49,11 @@ namespace Tickets.Application
             services.AddScoped<IGetTicketsUseCase, GetTicketsUseCase>();
             services.AddScoped<ICreateTicketUseCase, CreateTicketUseCase>();
             services.AddScoped<IGetTicketByIdUseCase, GetTicketByIdUseCase>();
+            services.AddScoped<ICreateDepartmentUseCase, CreateDepartmentUseCase>();
+            services.AddScoped<IGetDepartmentsUseCase, GetDepartmentsUseCase>();
+            services.AddScoped<ICreateCategorytUseCase, CreateCategoryUseCase>();
+            services.AddScoped<IGetCategoriesUseCase, GetCategoriesUseCase>();
+
 
             // Handlers
             services.AddScoped<IEventEmailHandler, EventEmailHandler>();
