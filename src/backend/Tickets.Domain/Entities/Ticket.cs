@@ -14,5 +14,11 @@ namespace Tickets.Domain.Entities
 
         public int? AssignedToUserId { get; set; } = null;
         public User? AssignedToUser { get; set; }
+
+        public int DepartmentId { get; set; }
+        public Department Department { get; set; }
+
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
     }
 }

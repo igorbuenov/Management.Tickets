@@ -1,5 +1,7 @@
 ﻿using System.Net.Sockets;
+using Tickets.Application.DTOs.Categories;
 using Tickets.Application.DTOs.Common;
+using Tickets.Application.DTOs.Departments;
 using Tickets.Application.DTOs.Tickets;
 using Tickets.Application.DTOs.Users;
 using Tickets.Application.UseCases.Tickets.GetTickets;
@@ -48,6 +50,16 @@ namespace Tickets.Application.UseCases.Tickets
                     Status = t.Status.ToString(),
                     CreatedAt = t.CreatedAt,
                     UpdatedAt = t.UpdatedAt,
+                    Category = new CategoryDto
+                    {
+                        Id = t.CategoryId,
+                        Name = t.Category.Name,
+                    },
+                    Department = new DepartmentDto
+                    {
+                        Id = t.DepartmentId,
+                        Name = t.Department.Name,
+                    },
                     CreatedBy = new UserSummaryDto
                     {
                         Id = t.CreatedByUser.Id,

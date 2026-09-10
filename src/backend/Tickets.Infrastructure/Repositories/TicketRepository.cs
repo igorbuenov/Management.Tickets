@@ -42,6 +42,8 @@ namespace Tickets.Infrastructure.Repositories
             }
 
             return await query
+                .Include(ticket => ticket.Category)
+                .Include(ticket => ticket.Department)
                 .OrderByDescending(t => t.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -76,6 +78,8 @@ namespace Tickets.Infrastructure.Repositories
         public async Task<Ticket> GetById(int id)
         {
             return await _context.Tickets
+                .Include(ticket => ticket.Category)
+                .Include(ticket => ticket.Department)
                 .Include(ticket => ticket.CreatedByUser)
                 .Include(ticket => ticket.AssignedToUser)
                 .FirstOrDefaultAsync(ticket => ticket.Id == id);

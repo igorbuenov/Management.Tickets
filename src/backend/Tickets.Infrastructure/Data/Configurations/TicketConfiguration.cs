@@ -23,6 +23,18 @@ namespace Tickets.Infrastructure.Data.Configurations
                 .WithMany()
                 .HasForeignKey(x => x.AssignedToUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(x => x.Department)
+                .WithMany()
+                .HasForeignKey(x => x.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(x => x.Category)
+                .WithMany()
+                .HasForeignKey(x => x.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

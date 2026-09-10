@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tickets.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Tickets.Infrastructure.Data;
 namespace Tickets.Infrastructure.Migrations
 {
     [DbContext(typeof(TicketsDbContext))]
-    partial class TicketsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260910041641_AddUserDepartmentAndTicketRelationships")]
+    partial class AddUserDepartmentAndTicketRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,7 +195,7 @@ namespace Tickets.Infrastructure.Migrations
                     b.Property<int?>("AssignedToUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -201,7 +204,7 @@ namespace Tickets.Infrastructure.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -403,8 +406,7 @@ namespace Tickets.Infrastructure.Migrations
                     b.HasOne("Tickets.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Tickets.Domain.Entities.User", "CreatedByUser")
                         .WithMany()
@@ -415,8 +417,7 @@ namespace Tickets.Infrastructure.Migrations
                     b.HasOne("Tickets.Domain.Entities.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AssignedToUser");
 
