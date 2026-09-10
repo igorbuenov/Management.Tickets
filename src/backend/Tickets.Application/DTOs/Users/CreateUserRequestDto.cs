@@ -7,5 +7,6 @@ namespace Tickets.Application.DTOs.Users
         public string Name { get; set; }
         public string Email { get; set; }
         public int RoleID { get; set; }
+        public int DepartmentId { get; set; }
     }
 }

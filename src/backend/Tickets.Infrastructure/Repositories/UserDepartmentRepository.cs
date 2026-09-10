@@ -14,6 +14,12 @@ namespace Tickets.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<UserDepartment> Add(UserDepartment userDepartment)
+        {
+            await _context.UserDepartments.AddAsync(userDepartment);
+            return userDepartment;
+        }
+
         public async Task<bool> UserBelongsToDepartment(int userId, int departmentId)
         {
             return await _context.UserDepartments
@@ -30,5 +36,7 @@ namespace Tickets.Infrastructure.Repositories
                 .OrderBy(department => department.Name)
                 .ToListAsync();
         }
+
+        
     }
 }
