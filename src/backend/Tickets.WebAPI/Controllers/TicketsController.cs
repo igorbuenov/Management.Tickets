@@ -29,7 +29,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateTicket([FromBody] CreateTicketRequestModel request)
         {
             var response =  _mapper.Map<CreateTicketResponseModel>(await _createTicketUseCase.Execute(_mapper.Map<CreateTicketRequestDto>(request)));
@@ -37,7 +37,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetTickets([FromQuery] GetTicketsRequestModel request)
         {
             var response = _mapper.Map<GetTicketsResponseModel>(await _getTicketsUseCase.Execute(request.Page, request.PageSize, request.Title, request.Priority, request.Status));
@@ -45,7 +45,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
-       // [Authorize]
+        [Authorize]
         public async Task<IActionResult> GetTicketById(int id)
         {
             var response = _mapper.Map<TicketModel>(await _getTicketByIdUseCase.Execute(id));

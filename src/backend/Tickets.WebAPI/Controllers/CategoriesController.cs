@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Categories;
 using Tickets.Application.UseCases.Categories.CreateCategory;
@@ -24,6 +25,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestModel request)
         {
             var response = _mapper.Map<CreateCategoryResponseModel>(await _createCategorytUseCase.Execute(_mapper.Map<CreateCategoryRequestDto>(request)));
@@ -31,6 +33,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetCategories([FromQuery] GetCategoriesRequestModel request)
         {
             var response = _mapper.Map<GetCategoriesResponseModel>(await _getCategoriesUseCase.Execute(_mapper.Map<GetCategoriesRequestDto>(request)));
