@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Departments;
 using Tickets.Application.UseCases.Departments.CreateDepartment;
@@ -28,6 +29,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateDepartment([FromBody] CreateDepartmentRequestModel request)
         {
             var response = _mapper.Map<CreateDepartmentResponseModel>(await _createDepartmentUseCase.Execute(_mapper.Map<CreateDepartmentRequestDto>(request)));
@@ -35,6 +37,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetDepartments([FromQuery] GetDerpartmentsRequestModel request)
         {
             var response = _mapper.Map<GetDepartmentsResponseModel>(await _getDepartmentsUseCase.Execute(_mapper.Map<GetDepartmentsRequestDto>(request)));
@@ -42,6 +45,7 @@ namespace Tickets.WebAPI.Controllers
         }
 
         [HttpGet("my-departments")]
+        [Authorize]
         public async Task<IActionResult> GetMyDepartments()
         {
             var response = await _getMyDepartmentsUseCase.Execute();
