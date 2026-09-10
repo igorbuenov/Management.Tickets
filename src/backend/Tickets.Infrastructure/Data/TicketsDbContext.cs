@@ -18,6 +18,7 @@ namespace Tickets.Infrastructure.Data
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<UserDepartment> UserDepartments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

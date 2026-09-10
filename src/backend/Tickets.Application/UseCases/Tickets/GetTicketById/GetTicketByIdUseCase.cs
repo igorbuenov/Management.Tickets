@@ -1,5 +1,7 @@
 ﻿
 using Microsoft.Extensions.Logging;
+using Tickets.Application.DTOs.Categories;
+using Tickets.Application.DTOs.Departments;
 using Tickets.Application.DTOs.Tickets;
 using Tickets.Application.DTOs.Users;
 using Tickets.Domain.Entities;
@@ -53,7 +55,16 @@ namespace Tickets.Application.UseCases.Tickets.GetTicketById
                 Description = ticket.Description,
                 Priority = ticket.Priority.ToString(),
                 Status = ticket.Status.ToString(),
-
+                Category = new CategoryDto
+                {
+                    Id = ticket.CategoryId,
+                    Name = ticket.Category.Name,
+                },
+                Department = new DepartmentDto
+                {
+                    Id=ticket.Department.Id,
+                    Name = ticket.Department.Name,
+                },
                 CreatedBy = new UserSummaryDto
                 {
                     Id = ticket.CreatedByUser.Id,

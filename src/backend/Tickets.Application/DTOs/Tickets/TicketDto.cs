@@ -1,4 +1,6 @@
-﻿using Tickets.Application.DTOs.Users;
+﻿using Tickets.Application.DTOs.Categories;
+using Tickets.Application.DTOs.Departments;
+using Tickets.Application.DTOs.Users;
 
 namespace Tickets.Application.DTOs.Tickets
 {
@@ -11,8 +13,10 @@ namespace Tickets.Application.DTOs.Tickets
         public string Description { get; set; }
         public string Priority { get; set; }
         public string Status { get; set; }
-
+        public CategoryDto Category { get; set; }
+        public DepartmentDto Department { get; set; }
         public UserSummaryDto CreatedBy { get; set; }
         public UserSummaryDto? AssignedTo { get; set; }
+
     }
 }
