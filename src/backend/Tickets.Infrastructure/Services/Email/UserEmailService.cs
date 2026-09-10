@@ -54,132 +54,186 @@ namespace Tickets.Infrastructure.Services.Email
             return typeEmail switch
             {
                 TypeEmailEnum.WelcomeEmail => $@"
-                    <!DOCTYPE html>
-                    <html lang=""pt-BR"">
-                    <head>
-                        <meta charset=""UTF-8"">
-                        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-                        <title>Bem-vindo ao Management Tickets</title>
-                    </head>
+                        <!DOCTYPE html>
+                        <html lang=""pt-BR"">
+                        <head>
+                            <meta charset=""UTF-8"">
+                            <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                            <title>Bem-vindo ao Management Tickets</title>
+                        </head>
 
-                    <body style=""
-                        margin: 0;
-                        padding: 0;
-                        background-color: #f9fafb;
-                        font-family: Arial, Helvetica, sans-serif;
-                        color: #111827;
-                    "">
+                        <body style=""
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f9fafb;
+                            font-family: Arial, Helvetica, sans-serif;
+                            color: #111827;
+                        "">
 
-                        <table
-                            width=""100%""
-                            cellpadding=""0""
-                            cellspacing=""0""
-                            border=""0""
-                            style=""
-                                background-color: #f9fafb;
-                                padding: 40px 20px;
-                            "">
+                            <table
+                                width=""100%""
+                                cellpadding=""0""
+                                cellspacing=""0""
+                                border=""0""
+                                style=""
+                                    background-color: #f9fafb;
+                                    padding: 40px 20px;
+                                "">
 
-                            <tr>
-                                <td align=""center"">
+                                <tr>
+                                    <td align=""center"">
 
-                                    <table
-                                        width=""100%""
-                                        cellpadding=""0""
-                                        cellspacing=""0""
-                                        border=""0""
-                                        style=""
-                                            max-width: 560px;
-                                            background-color: #ffffff;
-                                            border: 1px solid #e5e7eb;
-                                            border-radius: 12px;
-                                        "">
+                                        <table
+                                            width=""100%""
+                                            cellpadding=""0""
+                                            cellspacing=""0""
+                                            border=""0""
+                                            style=""
+                                                max-width: 560px;
+                                                background-color: #ffffff;
+                                                border: 1px solid #e5e7eb;
+                                                border-radius: 12px;
+                                            "">
 
-                                        <tr>
-                                            <td style=""padding: 40px;"">
+                                            <tr>
+                                                <td style=""padding: 40px;"">
 
-                                                <h1 style=""
-                                                    margin: 0 0 24px 0;
-                                                    font-size: 24px;
-                                                    line-height: 32px;
-                                                    font-weight: 700;
-                                                    color: #111827;
-                                                "">
-                                                    Bem-vindo ao Management Tickets
-                                                </h1>
-
-                                                <p style=""
-                                                    margin: 0 0 16px 0;
-                                                    font-size: 16px;
-                                                    line-height: 24px;
-                                                    color: #374151;
-                                                "">
-                                                    Olá, <strong>{safeName}</strong>!
-                                                </p>
-
-                                                <p style=""
-                                                    margin: 0 0 24px 0;
-                                                    font-size: 16px;
-                                                    line-height: 24px;
-                                                    color: #374151;
-                                                "">
-                                                    Sua conta foi criada com sucesso.
-                                                </p>
-
-                                                <div style=""
-                                                    background-color: #f3f4f6;
-                                                    border-radius: 8px;
-                                                    padding: 16px;
-                                                    margin-bottom: 24px;
-                                                "">
-                                                    <p style=""
-                                                        margin: 0;
-                                                        font-size: 14px;
-                                                        color: #6b7280;
-                                                    "">
-                                                        Senha temporária
-                                                    </p>
-
-                                                    <p style=""
-                                                        margin: 8px 0 0 0;
-                                                        font-size: 18px;
-                                                        font-weight: 600;
+                                                    <h1 style=""
+                                                        margin: 0 0 24px 0;
+                                                        font-size: 24px;
+                                                        line-height: 32px;
+                                                        font-weight: 700;
                                                         color: #111827;
                                                     "">
-                                                        {safeContent}
+                                                        Bem-vindo ao Management Tickets
+                                                    </h1>
+
+                                                    <p style=""
+                                                        margin: 0 0 16px 0;
+                                                        font-size: 16px;
+                                                        line-height: 24px;
+                                                        color: #374151;
+                                                    "">
+                                                        Olá, <strong>{safeName}</strong>!
                                                     </p>
-                                                </div>
 
-                                                <p style=""
-                                                    margin: 0;
-                                                    font-size: 14px;
-                                                    line-height: 20px;
-                                                    color: #6b7280;
-                                                "">
-                                                    Essa senha deve ser alterada no primeiro acesso.
-                                                </p>
+                                                    <p style=""
+                                                        margin: 0 0 24px 0;
+                                                        font-size: 16px;
+                                                        line-height: 24px;
+                                                        color: #374151;
+                                                    "">
+                                                        Sua conta foi criada com sucesso.
+                                                    </p>
 
-                                            </td>
-                                        </tr>
+                                                    <div style=""
+                                                        background-color: #f3f4f6;
+                                                        border-radius: 8px;
+                                                        padding: 16px;
+                                                        margin-bottom: 24px;
+                                                    "">
+                                                        <p style=""
+                                                            margin: 0;
+                                                            font-size: 14px;
+                                                            color: #6b7280;
+                                                        "">
+                                                            Senha temporária
+                                                        </p>
 
-                                    </table>
+                                                        <p style=""
+                                                            margin: 8px 0 0 0;
+                                                            font-size: 18px;
+                                                            font-weight: 600;
+                                                            color: #111827;
+                                                        "">
+                                                            {safeContent}
+                                                        </p>
+                                                    </div>
 
-                                    <p style=""
-                                        margin: 24px 0 0 0;
-                                        font-size: 12px;
-                                        line-height: 18px;
-                                        color: #9ca3af;
-                                    "">
-                                        Management Tickets
-                                    </p>
+                                                    <p style=""
+                                                        margin: 0 0 24px 0;
+                                                        font-size: 14px;
+                                                        line-height: 20px;
+                                                        color: #6b7280;
+                                                    "">
+                                                        Essa senha deve ser alterada no primeiro acesso.
+                                                    </p>
 
-                                </td>
-                            </tr>
+                                                    <!-- BOTÃO DE ACESSO -->
 
-                        </table>
+                                                    <table
+                                                        width=""100%""
+                                                        cellpadding=""0""
+                                                        cellspacing=""0""
+                                                        border=""0""
+                                                        style=""margin: 0 0 24px 0;"">
 
-                    </body>
-                    </html>",
+                                                        <tr>
+                                                            <td align=""center"">
+
+                                                                <a
+                                                                    href=""https://management-tickets-front-end.vercel.app/login""
+                                                                    style=""
+                                                                        display: inline-block;
+                                                                        background-color: #2563eb;
+                                                                        color: #ffffff;
+                                                                        text-decoration: none;
+                                                                        font-size: 14px;
+                                                                        font-weight: 600;
+                                                                        padding: 12px 24px;
+                                                                        border-radius: 8px;
+                                                                    "">
+                                                                    Acessar a plataforma
+                                                                </a>
+
+                                                            </td>
+                                                        </tr>
+
+                                                    </table>
+
+                                                    <!-- LINK ALTERNATIVO -->
+
+                                                    <p style=""
+                                                        margin: 0;
+                                                        font-size: 13px;
+                                                        line-height: 20px;
+                                                        color: #6b7280;
+                                                        text-align: center;
+                                                    "">
+                                                        Ou acesse diretamente:
+                                                        <br>
+                                                        <a
+                                                            href=""https://management-tickets-front-end.vercel.app/login""
+                                                            style=""
+                                                                color: #2563eb;
+                                                                text-decoration: none;
+                                                            "">
+                                                            https://management-tickets-front-end.vercel.app/login
+                                                        </a>
+                                                    </p>
+
+                                                </td>
+                                            </tr>
+
+                                        </table>
+
+                                        <p style=""
+                                            margin: 24px 0 0 0;
+                                            font-size: 12px;
+                                            line-height: 18px;
+                                            color: #9ca3af;
+                                        "">
+                                            Management Tickets
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                        </body>
+                        </html>
+                        ",
 
                 TypeEmailEnum.PasswordRecoveryEmail => $@"
                     <!DOCTYPE html>

@@ -21,6 +21,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
         private readonly ILogger<CreateUserUseCase> _logger;
         private readonly IValidator<CreateUserRequestDto> _validator;
         private readonly IOutboxRepository _outboxRepository;
+        private readonly IUserDepartmentRepository _userDepartmentRepository;
 
         public CreateUserUseCase(
             IUserRepository userRepository,
@@ -32,7 +33,8 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             ILogger<CreateUserUseCase> logger,
             IUserPasswordHistoryRepository userPasswordHistoryRepository,
             IValidator<CreateUserRequestDto> validator,
-            IOutboxRepository outboxRepository)
+            IOutboxRepository outboxRepository,
+            IUserDepartmentRepository userDepartmentRepository)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -44,6 +46,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _userPasswordHistoryRepository = userPasswordHistoryRepository;
             _validator = validator;
             _outboxRepository = outboxRepository;
+            _userDepartmentRepository = userDepartmentRepository;
         }
 
         public async Task<CreateUserResponseDto> Execute(CreateUserRequestDto request)
@@ -95,12 +98,13 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             await _userRoleRepository.Add(request.RoleID, user);
             _logger.LogInformation("Role {RoleId} assigned to user {UserId}", request.RoleID, user.Id);
 
+            await _userDepartmentRepository.Add(new UserDepartment { User = user, DepartmentId = request.DepartmentId});
+            _logger.LogInformation("DepatmentId {DepatmentId} assigned to user {UserId}", request.DepartmentId, user.Id);
 
             var createUserEvent = new CreateUserEmailEvent(
                 user.Email,
                 user.Name,
                 password);
-
 
             var outboxMessage = new OutboxMessage
             {
@@ -114,7 +118,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             await _unitOfWork.Commit();
 
             _logger.LogInformation("Create user request completed successfully for {UserId}", user.Id);
-            return BuildResponse(user, request.RoleID);
+            return BuildResponse(user, request.RoleID, request.DepartmentId);
         }
 
         private async Task ValidateRequestAsync(CreateUserRequestDto request)
@@ -148,7 +152,7 @@ namespace Tickets.Application.UseCases.Users.CreateUser
             _logger.LogInformation("Create user request validation passed for {Email}", request.Email);
         }
 
-        private CreateUserResponseDto BuildResponse(User user, int roleID)
+        private CreateUserResponseDto BuildResponse(User user, int roleID, int departmentId)
         {
             return new CreateUserResponseDto
             {
@@ -157,7 +161,8 @@ namespace Tickets.Application.UseCases.Users.CreateUser
                 {
                     Name = user.Name,
                     Email = user.Email,
-                    RoleID = roleID
+                    RoleID = roleID,
+                    DepartmentId = departmentId
                 }
             };
         }
