@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tickets.Application.Commons.Security;
-using Tickets.Application.DTOs.Users;
+using Tickets.Application.DTOs.Auth;
 using Tickets.Application.Interfaces;
 using Tickets.Application.UseCases.Users.ChangePassword;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Interfaces.Repositories;
 using Tickets.Exceptions.ExceptionBase;
 
-namespace Tickets.Application.UseCases.Users.ChangeTemporaryPassword
+namespace Tickets.Application.UseCases.Auth.ChangeTemporaryPassword
 {
     public class ChangeTemporaryPasswordUseCase : IChangeTemporaryPasswordUseCase
     {
@@ -36,43 +36,54 @@ namespace Tickets.Application.UseCases.Users.ChangeTemporaryPassword
             _unitOfWork = unitOfWork;
         }
 
-
         public async Task Execute(ChangeTemporaryPasswordRequestDto request, int id)
         {
-            if (id != _currentUser.UserId)
+
+            try
             {
-                throw new ForbiddenException("You can only change your own password.");
+                var currentUserId = _currentUser.UserId;
+
+                if (id != currentUserId)
+                {
+                    throw new ForbiddenException("You can only change your own password.");
+                }
+
+                ValidateRequest(request);
+
+                var currentPassword = await _passwordRepository.GetByUserId(id);
+                if (currentPassword is null)
+                    throw new NotFoundException("Current password record not found for the user.");
+
+                if (currentPassword.ExpirationDate >= DateTime.Now)
+                    throw new BusinessRuleException("Password change is not required.");
+
+                await ValidatePasswordHistory(request, id);
+
+                var newHashPassword = _passwordService.HashPassword(request.NewPassword);
+
+                currentPassword.Update(
+                    newHashPassword,
+                    DateTime.Now.AddDays(PasswordPolicy.ExpirationDays),
+                    id);
+
+                UserPasswordHistory passwordHistory = new UserPasswordHistory
+                {
+                    UserId = id,
+                    HashPassword = newHashPassword,
+                    CreatedAt = DateTime.Now
+                };
+
+                _logger.LogInformation("Adding password history record for user {UserId}", id);
+                await _userPasswordHistoryRepository.Add(passwordHistory);
+
+                await _unitOfWork.Commit();
             }
-
-            ValidateRequest(request);
-
-            var currentPassword = await _passwordRepository.GetByUserId(id);
-            if (currentPassword is null)
-                throw new NotFoundException("Current password record not found for the user.");
-
-            if (currentPassword.ExpirationDate >= DateTime.Now)
-                throw new BusinessRuleException("Password change is not required.");
-
-            await ValidatePasswordHistory(request, id);
-
-            var newHashPassword = _passwordService.HashPassword(request.NewPassword);
-
-            currentPassword.Update(
-                newHashPassword,
-                DateTime.Now.AddDays(PasswordPolicy.ExpirationDays),
-                id);
-
-            UserPasswordHistory passwordHistory = new UserPasswordHistory
+            catch (Exception ex)
             {
-                UserId = id,
-                HashPassword = newHashPassword,
-                CreatedAt = DateTime.Now
-            };
-
-            _logger.LogInformation("Adding password history record for user {UserId}", id);
-            await _userPasswordHistoryRepository.Add(passwordHistory);
-
-            await _unitOfWork.Commit();
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+            
         }
         private void ValidateRequest(ChangeTemporaryPasswordRequestDto request)
         {

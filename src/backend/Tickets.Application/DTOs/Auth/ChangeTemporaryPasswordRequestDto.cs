@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tickets.Application.DTOs.Users
+namespace Tickets.Application.DTOs.Auth
 {
     public class ChangeTemporaryPasswordRequestDto
     {

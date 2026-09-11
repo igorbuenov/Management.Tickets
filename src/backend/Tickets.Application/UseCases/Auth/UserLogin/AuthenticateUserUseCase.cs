@@ -98,7 +98,7 @@ namespace Tickets.Application.UseCases.Auth.UserLogin
             var password = await _passwordRepository.GetByUserId(user.Id);
 
             bool mustChangePassword = false;
-            if(password.ExpirationDate < DateTime.UtcNow)
+            if(password.ExpirationDate <= DateTime.UtcNow)
             {
                 mustChangePassword = true;
             }

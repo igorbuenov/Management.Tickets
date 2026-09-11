@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tickets.Application.Commons.Security;
-using Tickets.Application.DTOs.Users;
+using Tickets.Application.DTOs.Auth;
 
 namespace Tickets.Application.Validators.Password
 {

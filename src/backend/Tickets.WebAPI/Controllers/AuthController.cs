@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Auth;
 using Tickets.Application.DTOs.Users;
+using Tickets.Application.UseCases.Auth.ChangeTemporaryPassword;
 using Tickets.Application.UseCases.Auth.ForgotPassword;
 using Tickets.Application.UseCases.Auth.ResetPassword;
 using Tickets.Application.UseCases.Auth.UserLogin;
@@ -20,13 +21,15 @@ namespace Tickets.WebAPI.Controllers
         private readonly IAuthenticateUserUseCase _authenticateUserUseCase;
         private readonly IForgotPasswordUseCase _forgotPasswordUseCase;
         private readonly IResetPasswordUseCase _resetPasswordUseCase;
+        private readonly IChangeTemporaryPasswordUseCase _changeTemporaryPasswordUseCase;
 
-        public AuthController(IMapper mapper, IAuthenticateUserUseCase authenticateUserUseCase, IForgotPasswordUseCase forgotPasswordUseCase, IResetPasswordUseCase resetPasswordUseCase)
+        public AuthController(IMapper mapper, IAuthenticateUserUseCase authenticateUserUseCase, IForgotPasswordUseCase forgotPasswordUseCase, IResetPasswordUseCase resetPasswordUseCase, IChangeTemporaryPasswordUseCase changeTemporaryPasswordUseCase)
         {
             _mapper = mapper;
             _authenticateUserUseCase = authenticateUserUseCase;
             _forgotPasswordUseCase = forgotPasswordUseCase;
             _resetPasswordUseCase = resetPasswordUseCase;
+            _changeTemporaryPasswordUseCase = changeTemporaryPasswordUseCase;
         }
 
         [HttpPost("login")]
@@ -54,6 +57,14 @@ namespace Tickets.WebAPI.Controllers
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestModel request)
         {
             await _resetPasswordUseCase.Execute(_mapper.Map<ResetPasswordRequestDto>(request));
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("{id:int}/change-temporary-password")]
+        public async Task<IActionResult> ChangeTemporaryPassword(int id, [FromBody] ChangeTemporaryPasswordRequestModel request)
+        {
+            await _changeTemporaryPasswordUseCase.Execute(_mapper.Map<ChangeTemporaryPasswordRequestDto>(request), id);
             return NoContent();
         }
 
