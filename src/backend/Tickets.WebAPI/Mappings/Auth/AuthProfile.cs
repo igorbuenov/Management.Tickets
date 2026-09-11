@@ -3,6 +3,7 @@ using Tickets.Application.DTOs.Auth;
 using Tickets.WebAPI.Models.Auth;
 using Tickets.WebAPI.Models.Auth.Request;
 using Tickets.WebAPI.Models.Auth.Response;
+using Tickets.WebAPI.Models.Users.Request;
 
 namespace Tickets.WebAPI.Mappings.Auth
 {
@@ -14,6 +15,7 @@ namespace Tickets.WebAPI.Mappings.Auth
             CreateMap<LoginResponseDto, LoginResponseModel>();
             CreateMap<LoginUserDto, LoginUserModel>();
             CreateMap<ResetPasswordRequestModel, ResetPasswordRequestDto>();
+            CreateMap<ChangeTemporaryPasswordRequestModel, ChangeTemporaryPasswordRequestDto>();
         }
     }
 }

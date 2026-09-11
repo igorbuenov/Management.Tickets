@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Users;
+using Tickets.Application.UseCases.Auth.ChangeTemporaryPassword;
 using Tickets.Application.UseCases.Users.ActiveUser;
 using Tickets.Application.UseCases.Users.ChangePassword;
-using Tickets.Application.UseCases.Users.ChangeTemporaryPassword;
 using Tickets.Application.UseCases.Users.CreateUser;
 using Tickets.Application.UseCases.Users.DeleteUser;
 using Tickets.Application.UseCases.Users.GetUserById;
@@ -106,12 +106,6 @@ namespace Tickets.WebAPI.Controllers
             return NoContent();
         }
 
-        [Authorize]
-        [HttpPut("{id:int}/change-temporary-password")]
-        public async Task<IActionResult> ChangeTemporaryPassword(int id, [FromBody] ChangeTemporaryPasswordRequestModel request)
-        {
-            await _changeTemporaryPasswordUseCase.Execute(_mapper.Map<ChangeTemporaryPasswordRequestDto>(request), id);
-            return NoContent();
-        }
+        
     }
 }

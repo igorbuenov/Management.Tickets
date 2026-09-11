@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tickets.Application.DTOs.Users;
+using Tickets.Application.DTOs.Auth;
 
-namespace Tickets.Application.UseCases.Users.ChangeTemporaryPassword
+namespace Tickets.Application.UseCases.Auth.ChangeTemporaryPassword
 {
     public interface IChangeTemporaryPasswordUseCase
     {
