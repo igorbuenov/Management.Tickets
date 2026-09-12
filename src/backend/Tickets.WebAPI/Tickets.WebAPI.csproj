@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Enable XML documentation file so Swagger can pick up comments -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
