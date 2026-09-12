@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Tickets;
+using Tickets.Application.UseCases.Tickets.AssignTicket;
 using Tickets.Application.UseCases.Tickets.CreateTicket;
 using Tickets.Application.UseCases.Tickets.GetTicketById;
 using Tickets.Application.UseCases.Tickets.GetTickets;
@@ -19,13 +20,15 @@ namespace Tickets.WebAPI.Controllers
         private readonly IGetTicketsUseCase _getTicketsUseCase;
         private readonly IGetTicketByIdUseCase _getTicketByIdUseCase; 
         private readonly IMapper _mapper;
+        private readonly IAssignTicketUseCase _assignTicketUseCase;
 
-        public TicketsController(IGetTicketsUseCase getTicketsUseCase, ICreateTicketUseCase createTicketUseCase, IMapper mapper, IGetTicketByIdUseCase getTicketByIdUseCase)
+        public TicketsController(IGetTicketsUseCase getTicketsUseCase, ICreateTicketUseCase createTicketUseCase, IMapper mapper, IGetTicketByIdUseCase getTicketByIdUseCase, IAssignTicketUseCase assignTicketUseCase)
         {
             _getTicketsUseCase = getTicketsUseCase;
             _createTicketUseCase = createTicketUseCase;
             _mapper = mapper;
             _getTicketByIdUseCase = getTicketByIdUseCase;
+            _assignTicketUseCase = assignTicketUseCase;
         }
 
         [HttpPost]
@@ -50,6 +53,14 @@ namespace Tickets.WebAPI.Controllers
         {
             var response = _mapper.Map<TicketModel>(await _getTicketByIdUseCase.Execute(id));
             return Ok(response);
+        }
+
+        [Authorize(Roles = "Admin, Technician")]
+        [HttpPut("{id:int}/assign")]
+        public async Task<IActionResult> AssignTicketTo(int id, [FromBody] AssignTicketRequestModel request)
+        {
+            await _assignTicketUseCase.Execute(id, _mapper.Map<AssignTicketRequestDto>(request));
+            return NoContent();
         }
 
     }
