@@ -43,7 +43,7 @@ namespace Tickets.Application.UseCases.Tickets.AssignTicket
                 throw new NotFoundException("Técnico não encontrado.");
 
             if (ticket.CreatedByUserId == technician.Id)
-                throw new BusinessRuleException("Técnicos e/ou Administradores não podem atender os próprios tickets");
+                throw new BusinessRuleException("Não é permitido atender tickets que o pertencem!");
 
             var roles = await _userRoleRepository.GetRolesByUserId(technician.Id);
             if (!roles.Any(role => role.Id.Equals((int)UserRole.Technician) || role.Id.Equals((int)UserRole.Admin)))
