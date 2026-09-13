@@ -16,6 +16,7 @@ using Tickets.Application.UseCases.Categories.GetCategories;
 using Tickets.Application.UseCases.Departments.CreateDepartment;
 using Tickets.Application.UseCases.Departments.GetDepartments;
 using Tickets.Application.UseCases.Departments.GetMyDepartments;
+using Tickets.Application.UseCases.Notifications.GetNotifications;
 using Tickets.Application.UseCases.Tickets;
 using Tickets.Application.UseCases.Tickets.AssignTicket;
 using Tickets.Application.UseCases.Tickets.CreateTicket;
@@ -66,6 +67,7 @@ namespace Tickets.Application
             services.AddScoped<IGetCreatedTicketsByUserIdUseCase, GetCreatedTicketsByUserIdUseCase>();
             services.AddScoped<ICreateTicketMessageUseCase, CreateTicketMessageUseCase>();
             services.AddScoped<IGetTicketMessagesUseCase, GetTicketMessagesUseCase>();
+            services.AddScoped<IGetNotificationsUseCase, GetNotificationsUseCase>();
 
 
             // Handlers
