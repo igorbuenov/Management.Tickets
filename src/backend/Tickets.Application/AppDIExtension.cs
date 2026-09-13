@@ -3,7 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Tickets.Application.Configurations;
-using Tickets.Application.Handlers.EventEmailHandler;
+using Tickets.Application.Handlers.Tickets;
+using Tickets.Application.Handlers.Users;
 using Tickets.Application.Interfaces;
 using Tickets.Application.Services;
 using Tickets.Application.UseCases.Auth.ChangeTemporaryPassword;
@@ -68,7 +69,9 @@ namespace Tickets.Application
 
 
             // Handlers
-            services.AddScoped<IEventEmailHandler, EventEmailHandler>();
+            services.AddScoped<WelcomeEmailHandler>();
+            services.AddScoped<PasswordRecoveryEmailHandler>();
+            services.AddScoped<TicketMessageCreatedHandler>();
 
             // Services
             services.AddScoped<IPasswordService, PasswordService>();

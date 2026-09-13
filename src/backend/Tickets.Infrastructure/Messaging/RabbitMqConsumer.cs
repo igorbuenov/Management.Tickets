@@ -1,12 +1,8 @@
-﻿using System.Text;
-using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Tickets.Application.Events.Users;
-using Tickets.Application.Handlers.EventEmailHandler;
+using System.Text;
 using Tickets.Application.Interfaces.Messaging;
 using Tickets.Infrastructure.Settings;
 
@@ -15,15 +11,15 @@ namespace Tickets.Infrastructure.Messaging
     public class RabbitMqConsumer : IMessageConsumer
     {
         private readonly RabbitMqSettings _settings;
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<RabbitMqConsumer> _logger;
+        private readonly IEventDispatcher _eventDispatcher;
 
         public RabbitMqConsumer(
-            IOptions<RabbitMqSettings> settings, ILogger<RabbitMqConsumer> logger, IServiceScopeFactory scopeFactory)
+            IOptions<RabbitMqSettings> settings, ILogger<RabbitMqConsumer> logger, IEventDispatcher eventDispatcher)
         {
             _settings = settings.Value;
             _logger = logger;
-            _scopeFactory = scopeFactory;
+            _eventDispatcher = eventDispatcher;
         }
 
         public async Task StartAsync(
@@ -65,31 +61,14 @@ namespace Tickets.Infrastructure.Messaging
                 try
                 {
                     var body = args.Body.ToArray();
-
                     var message = Encoding.UTF8.GetString(body);
+                    var eventType = args.BasicProperties?.Type;
+                    
 
-
-                    object? @event = queueName switch
-                    {
-                        MessagingQueues.WelcomeEmail
-                            => JsonSerializer.Deserialize<CreateUserEmailEvent>(message),
-
-                        MessagingQueues.PasswordRecoveryEmail
-                            => JsonSerializer.Deserialize<PasswordRecoveryEmailEvent>(message),
-
-                        _ => throw new InvalidOperationException($"Unknown message type: {queueName}")
-                    };
-
-                    if (@event is null)
-                    {
-                        throw new InvalidOperationException(
-                            $"Could not deserialize message from queue {queueName}.");
-                    }
-
-                    using var scope = _scopeFactory.CreateScope();
-
-                    var eventEmailHandler = scope.ServiceProvider.GetRequiredService<IEventEmailHandler>();
-                    await eventEmailHandler.HandleEventAsync(@event.GetType().Name, @event, cancellationToken);
+                    await _eventDispatcher.DispatchAsync(
+                        eventType,
+                        message,
+                        cancellationToken);
 
                     await channel.BasicAckAsync(
                         args.DeliveryTag,

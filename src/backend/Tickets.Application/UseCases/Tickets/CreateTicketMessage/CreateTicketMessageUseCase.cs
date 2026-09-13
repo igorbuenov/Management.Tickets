@@ -1,4 +1,6 @@
-﻿using Tickets.Application.DTOs.Tickets;
+﻿using System.Text.Json;
+using Tickets.Application.DTOs.Tickets;
+using Tickets.Application.Events.Tickets;
 using Tickets.Application.Interfaces;
 using Tickets.Domain.Entities;
 using Tickets.Domain.Enums;
@@ -13,13 +15,15 @@ namespace Tickets.Application.UseCases.Tickets.CreateTicketMessage
         private readonly ICurrentUser _currentUser;
         private readonly ITicketRepository _ticketRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IOutboxRepository _outboxRepository;
 
-        public CreateTicketMessageUseCase(ITicketMessageRepository ticketMessageRepository, ICurrentUser currentUser, ITicketRepository ticketRepository, IUnitOfWork unitOfWork)
+        public CreateTicketMessageUseCase(ITicketMessageRepository ticketMessageRepository, ICurrentUser currentUser, ITicketRepository ticketRepository, IUnitOfWork unitOfWork, IOutboxRepository outboxRepository)
         {
             _ticketMessageRepository = ticketMessageRepository;
             _currentUser = currentUser;
             _ticketRepository = ticketRepository;
             _unitOfWork = unitOfWork;
+            _outboxRepository = outboxRepository;
         }
 
         public async Task Execute(int ticketId, CreateTicketMessageRequestDto request)
@@ -52,7 +56,22 @@ namespace Tickets.Application.UseCases.Tickets.CreateTicketMessage
                 Message = request.Message,
             };
 
-            await _ticketMessageRepository.Add(ticketMessage);
+            ticketMessage = await _ticketMessageRepository.Add(ticketMessage);
+
+            var @event = new TicketMessageCreatedEvent
+            {
+                TicketId = ticketMessage.TicketId,
+                SenderUserId = ticketMessage.UserId
+            };
+
+            var outboxMessage = new OutboxMessage
+            {
+                Type = nameof(TicketMessageCreatedEvent),
+                Content = JsonSerializer.Serialize(@event)
+            };
+
+            await _outboxRepository.Add(outboxMessage);
+
             await _unitOfWork.Commit();
 
         }

@@ -13,11 +13,13 @@ namespace Tickets.Infrastructure.Services.BackgroundServices
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<OutboxProcessor> _logger;
+        private readonly IMessageResolveRouter _messageResolveRouter;
 
-        public OutboxProcessor(IServiceScopeFactory scopeFactory, ILogger<OutboxProcessor> logger)
+        public OutboxProcessor(IServiceScopeFactory scopeFactory, ILogger<OutboxProcessor> logger, IMessageResolveRouter messageResolveRouter)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
+            _messageResolveRouter = messageResolveRouter;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -45,16 +47,7 @@ namespace Tickets.Infrastructure.Services.BackgroundServices
                 {
                     try
                     {
-                        var queueName = message.Type switch
-                        {
-                            nameof(CreateUserEmailEvent)
-                            => MessagingQueues.WelcomeEmail,
-
-                            nameof(PasswordRecoveryEmailEvent)
-                            => MessagingQueues.PasswordRecoveryEmail,
-
-                            _=> throw new InvalidOperationException($"Unknown message type: {message.Type}")
-                        };
+                        var queueName = _messageResolveRouter.Resolve(message.Type);
 
                         await publisher.PublishAsync(message.Type, message.Content, queueName);
 
