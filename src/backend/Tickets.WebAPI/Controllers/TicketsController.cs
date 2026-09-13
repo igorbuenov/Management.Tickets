@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.DTOs.Tickets;
 using Tickets.Application.UseCases.Tickets.AssignTicket;
 using Tickets.Application.UseCases.Tickets.CreateTicket;
+using Tickets.Application.UseCases.Tickets.CreateTicketMessage;
 using Tickets.Application.UseCases.Tickets.GetAssignedTicket;
 using Tickets.Application.UseCases.Tickets.GetCreatedTicketsByUserId;
 using Tickets.Application.UseCases.Tickets.GetTicketById;
+using Tickets.Application.UseCases.Tickets.GetTicketMessages;
 using Tickets.Application.UseCases.Tickets.GetTickets;
 using Tickets.WebAPI.Models.Tickets;
 using Tickets.WebAPI.Models.Tickets.Request;
@@ -25,8 +27,10 @@ namespace Tickets.WebAPI.Controllers
         private readonly IAssignTicketUseCase _assignTicketUseCase;
         private readonly IGetAssignedTicketsUseCase _getAssignedTicketsUseCase;
         private readonly IGetCreatedTicketsByUserIdUseCase _getCreatedTicketsByUserIdUseCase;
+        private readonly ICreateTicketMessageUseCase _createTicketMessageUseCase;
+        private readonly IGetTicketMessagesUseCase _getTicketMessagesUseCase;
 
-        public TicketsController(IGetTicketsUseCase getTicketsUseCase, ICreateTicketUseCase createTicketUseCase, IMapper mapper, IGetTicketByIdUseCase getTicketByIdUseCase, IAssignTicketUseCase assignTicketUseCase, IGetAssignedTicketsUseCase getAssignedTicketsUseCase, IGetCreatedTicketsByUserIdUseCase getCreatedTicketsByUserIdUseCase)
+        public TicketsController(IGetTicketsUseCase getTicketsUseCase, ICreateTicketUseCase createTicketUseCase, IMapper mapper, IGetTicketByIdUseCase getTicketByIdUseCase, IAssignTicketUseCase assignTicketUseCase, IGetAssignedTicketsUseCase getAssignedTicketsUseCase, IGetCreatedTicketsByUserIdUseCase getCreatedTicketsByUserIdUseCase, ICreateTicketMessageUseCase createTicketMessageUseCase, IGetTicketMessagesUseCase getTicketMessagesUseCase)
         {
             _getTicketsUseCase = getTicketsUseCase;
             _createTicketUseCase = createTicketUseCase;
@@ -35,6 +39,8 @@ namespace Tickets.WebAPI.Controllers
             _assignTicketUseCase = assignTicketUseCase;
             _getAssignedTicketsUseCase = getAssignedTicketsUseCase;
             _getCreatedTicketsByUserIdUseCase = getCreatedTicketsByUserIdUseCase;
+            _createTicketMessageUseCase = createTicketMessageUseCase;
+            _getTicketMessagesUseCase = getTicketMessagesUseCase;
         }
 
         [HttpPost]
@@ -83,6 +89,22 @@ namespace Tickets.WebAPI.Controllers
         {
             await _assignTicketUseCase.Execute(id, _mapper.Map<AssignTicketRequestDto>(request));
             return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost("{ticketId}/messages")]
+        public async Task<IActionResult> CreateMessage(int ticketId, [FromBody] CreateTicketMessageRequestModel request)
+        {
+            await _createTicketMessageUseCase.Execute(ticketId, _mapper.Map<CreateTicketMessageRequestDto>(request));
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpGet("{ticketId}/messages")]
+        public async Task<IActionResult> GetMessages(int ticketId)
+        {
+            var response = await _getTicketMessagesUseCase.Execute(ticketId);
+            return Ok(response);
         }
 
     }

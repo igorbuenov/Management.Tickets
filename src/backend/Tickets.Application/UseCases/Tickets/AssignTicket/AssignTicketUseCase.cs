@@ -46,7 +46,7 @@ namespace Tickets.Application.UseCases.Tickets.AssignTicket
                 throw new BusinessRuleException("Não é permitido atender tickets que o pertencem!");
 
             var roles = await _userRoleRepository.GetRolesByUserId(technician.Id);
-            if (!roles.Any(role => role.Id.Equals((int)UserRole.Technician) || role.Id.Equals((int)UserRole.Admin)))
+            if (!roles.Any(role => role.Id.Equals((int)UserRoleEnum.Technician) || role.Id.Equals((int)UserRoleEnum.Admin)))
                 throw new BusinessRuleException("O usuário selecionado não possui o perfil de técnico.");
 
             ticket.AssignedToUserId = technician.Id;

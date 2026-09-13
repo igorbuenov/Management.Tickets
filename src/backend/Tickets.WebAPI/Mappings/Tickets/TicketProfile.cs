@@ -19,6 +19,7 @@ namespace Tickets.WebAPI.Mappings.Tickets
             CreateMap<UserSummaryDto, UserSummaryModel>();
             CreateMap<PagedResultDto<TicketDto>, GetTicketsResponseModel>();
             CreateMap<AssignTicketRequestModel, AssignTicketRequestDto>();
+            CreateMap<CreateTicketMessageRequestModel, CreateTicketMessageRequestDto>();
         }
     }
 }
