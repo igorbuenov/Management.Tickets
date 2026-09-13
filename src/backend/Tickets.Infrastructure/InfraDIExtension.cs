@@ -44,6 +44,7 @@ namespace Tickets.Infrastructure
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUserDepartmentRepository, UserDepartmentRepository>();
             services.AddScoped<ITicketMessageRepository, TicketMessageRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
 
 
@@ -53,6 +54,8 @@ namespace Tickets.Infrastructure
             // Messaging
             services.AddScoped<IMessagePublisher, RabbitMqPublisher>();
             services.AddSingleton<IMessageConsumer, RabbitMqConsumer>();
+            services.AddSingleton<IEventDispatcher, EventDispatcher>();
+            services.AddSingleton<IMessageResolveRouter, MessageResolveRouter>();
 
             // Background Services
             services.AddHostedService<OutboxProcessor>();

@@ -14,9 +14,10 @@ namespace Tickets.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task Add(TicketMessage message)
+        public async Task<TicketMessage> Add(TicketMessage message)
         {
             await _context.TicketMessages.AddAsync(message);
+            return message;
         }
 
         public async Task<IEnumerable<TicketMessage>> GetByTicketId(int ticketId)

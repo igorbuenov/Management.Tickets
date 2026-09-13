@@ -35,6 +35,10 @@ namespace Tickets.Infrastructure.Services.BackgroundServices
                      _consumer.StartAsync(
                          MessagingQueues.PasswordRecoveryEmail,
                          stoppingToken),
+
+                     _consumer.StartAsync(
+                        MessagingQueues.TicketNotifications,
+                        stoppingToken),
                 };
 
                 await Task.WhenAll(consumers);

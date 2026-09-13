@@ -20,6 +20,7 @@ namespace Tickets.Infrastructure.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<UserDepartment> UserDepartments { get; set; }
         public DbSet<TicketMessage> TicketMessages { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

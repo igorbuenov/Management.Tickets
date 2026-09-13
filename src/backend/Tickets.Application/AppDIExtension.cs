@@ -3,7 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Tickets.Application.Configurations;
-using Tickets.Application.Handlers.EventEmailHandler;
+using Tickets.Application.Handlers.Tickets;
+using Tickets.Application.Handlers.Users;
 using Tickets.Application.Interfaces;
 using Tickets.Application.Services;
 using Tickets.Application.UseCases.Auth.ChangeTemporaryPassword;
@@ -15,6 +16,7 @@ using Tickets.Application.UseCases.Categories.GetCategories;
 using Tickets.Application.UseCases.Departments.CreateDepartment;
 using Tickets.Application.UseCases.Departments.GetDepartments;
 using Tickets.Application.UseCases.Departments.GetMyDepartments;
+using Tickets.Application.UseCases.Notifications.GetNotifications;
 using Tickets.Application.UseCases.Tickets;
 using Tickets.Application.UseCases.Tickets.AssignTicket;
 using Tickets.Application.UseCases.Tickets.CreateTicket;
@@ -65,10 +67,13 @@ namespace Tickets.Application
             services.AddScoped<IGetCreatedTicketsByUserIdUseCase, GetCreatedTicketsByUserIdUseCase>();
             services.AddScoped<ICreateTicketMessageUseCase, CreateTicketMessageUseCase>();
             services.AddScoped<IGetTicketMessagesUseCase, GetTicketMessagesUseCase>();
+            services.AddScoped<IGetNotificationsUseCase, GetNotificationsUseCase>();
 
 
             // Handlers
-            services.AddScoped<IEventEmailHandler, EventEmailHandler>();
+            services.AddScoped<WelcomeEmailHandler>();
+            services.AddScoped<PasswordRecoveryEmailHandler>();
+            services.AddScoped<TicketMessageCreatedHandler>();
 
             // Services
             services.AddScoped<IPasswordService, PasswordService>();
