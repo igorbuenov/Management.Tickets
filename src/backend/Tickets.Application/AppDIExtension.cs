@@ -18,9 +18,11 @@ using Tickets.Application.UseCases.Departments.GetMyDepartments;
 using Tickets.Application.UseCases.Tickets;
 using Tickets.Application.UseCases.Tickets.AssignTicket;
 using Tickets.Application.UseCases.Tickets.CreateTicket;
+using Tickets.Application.UseCases.Tickets.CreateTicketMessage;
 using Tickets.Application.UseCases.Tickets.GetAssignedTicket;
 using Tickets.Application.UseCases.Tickets.GetCreatedTicketsByUserId;
 using Tickets.Application.UseCases.Tickets.GetTicketById;
+using Tickets.Application.UseCases.Tickets.GetTicketMessages;
 using Tickets.Application.UseCases.Tickets.GetTickets;
 using Tickets.Application.UseCases.Users.ActiveUser;
 using Tickets.Application.UseCases.Users.ChangePassword;
@@ -61,6 +63,8 @@ namespace Tickets.Application
             services.AddScoped<IAssignTicketUseCase, AssignTicketUseCase>();
             services.AddScoped<IGetAssignedTicketsUseCase, GetAssignedTicketsUseCase>();
             services.AddScoped<IGetCreatedTicketsByUserIdUseCase, GetCreatedTicketsByUserIdUseCase>();
+            services.AddScoped<ICreateTicketMessageUseCase, CreateTicketMessageUseCase>();
+            services.AddScoped<IGetTicketMessagesUseCase, GetTicketMessagesUseCase>();
 
 
             // Handlers

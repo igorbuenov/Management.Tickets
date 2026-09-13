@@ -43,6 +43,7 @@ namespace Tickets.Infrastructure
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUserDepartmentRepository, UserDepartmentRepository>();
+            services.AddScoped<ITicketMessageRepository, TicketMessageRepository>();
 
 
 

@@ -1,6 +1,6 @@
 ﻿namespace Tickets.Domain.Enums
 {
-    public enum UserRole
+    public enum UserRoleEnum
     {
         Admin = 1,
         User = 2,
