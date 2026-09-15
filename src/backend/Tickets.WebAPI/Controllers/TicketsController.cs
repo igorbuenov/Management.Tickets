@@ -11,6 +11,7 @@ using Tickets.Application.UseCases.Tickets.GetTicketById;
 using Tickets.Application.UseCases.Tickets.GetTicketMessages;
 using Tickets.Application.UseCases.Tickets.GetTickets;
 using Tickets.Application.UseCases.Tickets.GetTicketsByDepartament;
+using Tickets.Application.UseCases.Tickets.UpdateStatus;
 using Tickets.WebAPI.Models.Tickets;
 using Tickets.WebAPI.Models.Tickets.Request;
 using Tickets.WebAPI.Models.Tickets.Response;
@@ -31,8 +32,9 @@ namespace Tickets.WebAPI.Controllers
         private readonly ICreateTicketMessageUseCase _createTicketMessageUseCase;
         private readonly IGetTicketMessagesUseCase _getTicketMessagesUseCase;
         private readonly IGetTicketsByDepartmentUseCase _getTicketsByDepartmentUseCase;
+        private readonly IUpdateTicketStatusUseCase _updateTicketStatusUseCase;
 
-        public TicketsController(IGetTicketsUseCase getTicketsUseCase, ICreateTicketUseCase createTicketUseCase, IMapper mapper, IGetTicketByIdUseCase getTicketByIdUseCase, IAssignTicketUseCase assignTicketUseCase, IGetAssignedTicketsUseCase getAssignedTicketsUseCase, IGetCreatedTicketsByUserIdUseCase getCreatedTicketsByUserIdUseCase, ICreateTicketMessageUseCase createTicketMessageUseCase, IGetTicketMessagesUseCase getTicketMessagesUseCase, IGetTicketsByDepartmentUseCase getTicketsByDepartmentUseCase)
+        public TicketsController(IGetTicketsUseCase getTicketsUseCase, ICreateTicketUseCase createTicketUseCase, IMapper mapper, IGetTicketByIdUseCase getTicketByIdUseCase, IAssignTicketUseCase assignTicketUseCase, IGetAssignedTicketsUseCase getAssignedTicketsUseCase, IGetCreatedTicketsByUserIdUseCase getCreatedTicketsByUserIdUseCase, ICreateTicketMessageUseCase createTicketMessageUseCase, IGetTicketMessagesUseCase getTicketMessagesUseCase, IGetTicketsByDepartmentUseCase getTicketsByDepartmentUseCase, IUpdateTicketStatusUseCase updateTicketStatusUseCase)
         {
             _getTicketsUseCase = getTicketsUseCase;
             _createTicketUseCase = createTicketUseCase;
@@ -44,6 +46,7 @@ namespace Tickets.WebAPI.Controllers
             _createTicketMessageUseCase = createTicketMessageUseCase;
             _getTicketMessagesUseCase = getTicketMessagesUseCase;
             _getTicketsByDepartmentUseCase = getTicketsByDepartmentUseCase;
+            _updateTicketStatusUseCase = updateTicketStatusUseCase;
         }
 
         [HttpPost]
@@ -128,6 +131,17 @@ namespace Tickets.WebAPI.Controllers
 
             return Ok(response);
         }
+
+        [Authorize]
+        [HttpPatch("{ticketId}/status")]
+        public async Task<IActionResult> UpdateStatus(
+            int ticketId,
+            [FromBody] UpdateTicketStatusRequestDto request)
+        {
+            await _updateTicketStatusUseCase.Execute(ticketId, request.Status);
+            return NoContent();
+        }
+
 
     }
 }
