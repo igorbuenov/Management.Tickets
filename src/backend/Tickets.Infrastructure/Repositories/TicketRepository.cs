@@ -202,5 +202,78 @@ namespace Tickets.Infrastructure.Repositories
 
             return await query.CountAsync();
         }
+
+        public async Task<IEnumerable<Ticket>> GetPagedByDepartments(
+            IEnumerable<int> departmentIds,
+            int page,
+            int pageSize,
+            string? title,
+            int? priority,
+            int? status)
+        {
+            var query = _context.Tickets
+                .Include(ticket => ticket.CreatedByUser)
+                .Include(ticket => ticket.AssignedToUser)
+                .Where(ticket => departmentIds.Contains(ticket.DepartmentId))
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                query = query.Where(ticket =>
+                    ticket.Title.Contains(title));
+            }
+
+            if (priority.HasValue)
+            {
+                query = query.Where(ticket =>
+                    (int)ticket.Priority == priority.Value);
+            }
+
+            if (status.HasValue)
+            {
+                query = query.Where(ticket =>
+                    (int)ticket.Status == status.Value);
+            }
+
+            return await query
+                .Include(ticket => ticket.Category)
+                .Include(ticket => ticket.Department)
+                .OrderByDescending(ticket => ticket.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountByDepartments(
+            IEnumerable<int> departmentIds,
+            string? title,
+            int? priority,
+            int? status)
+        {
+            var query = _context.Tickets
+                .Where(ticket =>
+                    departmentIds.Contains(ticket.DepartmentId))
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                query = query.Where(ticket =>
+                    ticket.Title.Contains(title));
+            }
+
+            if (priority.HasValue)
+            {
+                query = query.Where(ticket =>
+                    (int)ticket.Priority == priority.Value);
+            }
+
+            if (status.HasValue)
+            {
+                query = query.Where(ticket =>
+                    (int)ticket.Status == status.Value);
+            }
+
+            return await query.CountAsync();
+        }
     }
 }

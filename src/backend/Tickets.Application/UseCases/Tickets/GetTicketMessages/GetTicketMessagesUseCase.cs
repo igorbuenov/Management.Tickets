@@ -43,9 +43,6 @@ namespace Tickets.Application.UseCases.Tickets.GetTicketMessages
 
             var isAdmin = _currentUser.Role.Equals(UserRoleEnum.Admin.ToString());
 
-            if (!isTicketParticipant && !isAdmin)
-                throw new BusinessRuleException("Você não tem permissão para visualizar as mensagens desse ticket!");
-
             var messages = await _ticketMessageRepository.GetByTicketId(ticketId);
 
             return BuildResponse(messages);
