@@ -65,7 +65,7 @@ namespace Tickets.Application.Handlers.Tickets
                     ticket.CreatedByUserId,
                     ticket.AssignedToUserId
                 }
-                .Where(id => id.HasValue)
+                .Where(id => id.HasValue && id.Value != senderUserId)
                 .Select(id => id!.Value)
                 .Distinct();
             }

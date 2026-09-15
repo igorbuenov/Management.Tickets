@@ -6,5 +6,6 @@ namespace Tickets.Domain.Interfaces.Repositories
     {
         Task Add(Notification notification);
         Task<IEnumerable<Notification>> GetByUserId(int userId);
+        Task<Notification?> GetById(int notificationId, int userId);
     }
 }

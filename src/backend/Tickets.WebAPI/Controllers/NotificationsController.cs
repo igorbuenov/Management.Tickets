@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Application.UseCases.Notifications.GetNotifications;
+using Tickets.Application.UseCases.Notifications.MarkNotificationAsRead;
 
 namespace Tickets.WebAPI.Controllers
 {
@@ -10,11 +11,13 @@ namespace Tickets.WebAPI.Controllers
     public class NotificationsController : ControllerBase
     {
         private readonly IGetNotificationsUseCase _getNotificationsUseCase;
+        private readonly IMarkNotificationAsReadUseCase _markNotificationAsReadUseCase;
 
         public NotificationsController(
-            IGetNotificationsUseCase getNotificationsUseCase)
+            IGetNotificationsUseCase getNotificationsUseCase, IMarkNotificationAsReadUseCase markNotificationAsReadUseCase)
         {
             _getNotificationsUseCase = getNotificationsUseCase;
+            _markNotificationAsReadUseCase = markNotificationAsReadUseCase;
         }
 
         [HttpGet]
@@ -22,6 +25,13 @@ namespace Tickets.WebAPI.Controllers
         {
             var notifications = await _getNotificationsUseCase.Execute();
             return Ok(notifications);
+        }
+
+        [HttpPatch("{id}/read")]
+        public async Task<IActionResult> MarkAsRead(int id)
+        {
+            await _markNotificationAsReadUseCase.Execute(id);
+            return NoContent();
         }
     }
 }
