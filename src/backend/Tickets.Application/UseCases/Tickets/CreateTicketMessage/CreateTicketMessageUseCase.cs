@@ -32,6 +32,9 @@ namespace Tickets.Application.UseCases.Tickets.CreateTicketMessage
             if (ticket == null)
                 throw new NotFoundException("Ticket não encontrado!");
 
+            if(ticket.Status == TicketStatus.Resolved || ticket.Status == TicketStatus.Closed)
+                throw new BusinessRuleException("Não é possivel enviar mensagens para ticket resolvido ou fechado!");
+
             if (_currentUser.UserId is null)
                 throw new UnauthorizedException("Usuário deve estar autenticado para enviar mensagem.");
 
@@ -45,8 +48,7 @@ namespace Tickets.Application.UseCases.Tickets.CreateTicketMessage
 
             if (!isTicketParticipant && !isAdmin)
             {
-                throw new BusinessRuleException(
-                    "Você não tem permissão para responder esse ticket!");
+                throw new BusinessRuleException("Você não tem permissão para responder esse ticket!");
             }
 
             var ticketMessage = new TicketMessage
