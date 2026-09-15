@@ -8,7 +8,6 @@ namespace Tickets.Application.UseCases.Tickets.AssignTicket
 {
     public class AssignTicketUseCase : IAssignTicketUseCase
     {
-
         private readonly ITicketRepository _ticketRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserRoleRepository _userRoleRepository;
@@ -29,7 +28,6 @@ namespace Tickets.Application.UseCases.Tickets.AssignTicket
             _logger = logger;
         }
 
-
         public async Task Execute(int ticketId, AssignTicketRequestDto request)
         {
             _logger.LogInformation("Iniciando atribuição do Ticket {TicketId} para o usuário {TechnicianId}", ticketId, request.TechnicianId);
@@ -46,9 +44,14 @@ namespace Tickets.Application.UseCases.Tickets.AssignTicket
                 throw new BusinessRuleException("Não é permitido atender tickets que o pertencem!");
 
             var roles = await _userRoleRepository.GetRolesByUserId(technician.Id);
-            if (!roles.Any(role => role.Id.Equals((int)UserRoleEnum.Technician) || role.Id.Equals((int)UserRoleEnum.Admin)))
-                throw new BusinessRuleException("O usuário selecionado não possui o perfil de técnico.");
 
+            if (!roles.Any(role => 
+                role.Id.Equals((int)UserRoleEnum.Technician) ||
+                role.Id.Equals((int)UserRoleEnum.Admin)))
+            {
+                throw new BusinessRuleException("O usuário selecionado não possui o perfil de técnico.");
+            }
+                
             ticket.AssignedToUserId = technician.Id;
             ticket.Status = TicketStatus.InProgress; 
             ticket.UpdatedAt = DateTime.Now;

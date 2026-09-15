@@ -27,6 +27,8 @@ using Tickets.Application.UseCases.Tickets.GetCreatedTicketsByUserId;
 using Tickets.Application.UseCases.Tickets.GetTicketById;
 using Tickets.Application.UseCases.Tickets.GetTicketMessages;
 using Tickets.Application.UseCases.Tickets.GetTickets;
+using Tickets.Application.UseCases.Tickets.GetTicketsByDepartament;
+using Tickets.Application.UseCases.Tickets.UpdateStatus;
 using Tickets.Application.UseCases.Users.ActiveUser;
 using Tickets.Application.UseCases.Users.ChangePassword;
 using Tickets.Application.UseCases.Users.CreateUser;
@@ -70,6 +72,8 @@ namespace Tickets.Application
             services.AddScoped<IGetTicketMessagesUseCase, GetTicketMessagesUseCase>();
             services.AddScoped<IGetNotificationsUseCase, GetNotificationsUseCase>();
             services.AddScoped<IMarkNotificationAsReadUseCase, MarkNotificationAsReadUseCase>();
+            services.AddScoped<IGetTicketsByDepartmentUseCase, GetTicketsByDepartmentUseCase>();
+            services.AddScoped<IUpdateTicketStatusUseCase, UpdateTicketStatusUseCase>();
 
 
             // Handlers
