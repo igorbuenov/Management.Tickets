@@ -19,10 +19,20 @@ namespace Tickets.Infrastructure.Repositories
             await _context.Notifications.AddAsync(notification);
         }
 
+        public async Task<Notification?> GetById(int notificationId, int userId)
+        {
+            return await _context.Notifications
+                .FirstOrDefaultAsync(notification =>
+                    notification.Id == notificationId &&
+                    notification.UserId == userId);
+        }
+
         public async Task<IEnumerable<Notification>> GetByUserId(int userId)
         {
             return await _context.Notifications
-                .Where(notification => notification.UserId == userId)
+                .Where(notification =>
+                    notification.UserId == userId &&
+                    !notification.IsRead)
                 .OrderByDescending(notification => notification.CreatedAt)
                 .ToListAsync();
         }
