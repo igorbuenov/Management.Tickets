@@ -1,5 +1,6 @@
 ﻿using CommonTestUtilities.Requests;
 using FluentAssertions;
+using FluentValidation.TestHelper;
 using Tickets.Application.Validators.Users;
 
 namespace Validators.Tests.Users.Create
@@ -8,103 +9,135 @@ namespace Validators.Tests.Users.Create
     {
 
         [Fact]
-        public void Success_When_Request_Is_Correct()
+        public void Should_NotHave_ValidationError_When_Request_Is_Correct()
         {
-            // Arrange
+            // Arr
             var validator = new CreateUserValidator();
             var request = CreateUserRequestBuilder.Build();
 
             // Act
-            var result = validator.Validate(request);
+            var result = validator.TestValidate(request);
 
-            // Assert
+            // Ass
             result.IsValid.Should().BeTrue();
+        }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void Should_Have_ValidationError_When_Name_Is_Empty(string name)
+        {
+            // Arr
+            var validator = new CreateUserValidator();
+            var request = CreateUserRequestBuilder.Build();
+            request.Name = name;
+
+            // Act
+            var result = validator.TestValidate(request);
+
+            // Ass
+            result.ShouldHaveValidationErrorFor(x => x.Name)
+                .WithErrorMessage("O nome do usuário é obrigatório.");
         }
 
         [Fact]
-        public void Error_When_Name_Is_Empty()
+        public void Should_NotHave_ValidationError_When_Name_Is_Valid()
         {
-            // Arrange
+            // Arr
             var validator = new CreateUserValidator();
             var request = CreateUserRequestBuilder.Build();
-            request.Name = string.Empty;
 
             // Act
-            var result = validator.Validate(request);
+            var result = validator.TestValidate(request);
 
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.Errors.Should().ContainSingle()
-                .And.Contain(e => e.ErrorMessage.Equals("O nome do usuário é obrigatório."));
+            // Ass
+            result.ShouldNotHaveValidationErrorFor(x => x.Name);
+        }
 
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_NotHave_ValidationError_When_RoleId_Is_Correct(int roleId)
+        {
+            // Arr
+            var validator = new CreateUserValidator();
+            var request = CreateUserRequestBuilder.Build();
+            request.RoleID = roleId;
+
+            // Act
+            var result = validator.TestValidate(request);
+
+            // Ass
+            result.ShouldNotHaveValidationErrorFor(x => x.RoleID);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(4)]
+        public void Should_Have_ValidationError_When_RoleId_Is_Invalid(int roleId)
+        {
+            // Arr
+            var validator = new CreateUserValidator();
+            var request = CreateUserRequestBuilder.Build();
+            request.RoleID = roleId;
+
+            // Act
+            var result = validator.TestValidate(request);
+
+            // Ass
+            result.ShouldHaveValidationErrorFor(x => x.RoleID)
+                .WithErrorMessage("O tipo do usuário deve ser 1 (Admin), 2 (Technician) ou 3 (User)."); 
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void Should_Have_ValidationError_When_Email_Is_Empty(string email)
+        {
+            // Arr
+            var validator = new CreateUserValidator();
+            var request = CreateUserRequestBuilder.Build();
+            request.Email = email;
+
+            // Act
+            var result = validator.TestValidate(request);
+
+            // Ass
+            result.ShouldHaveValidationErrorFor(x => x.Email)
+                .WithErrorMessage("O email do usuário é obrigatório.");
         }
 
         [Fact]
-        public void Error_When_Email_Is_Empty()
+        public void Should_Have_ValidationError_When_Email_Is_Incorrect()
         {
-            // Arrange
+            // Arr
             var validator = new CreateUserValidator();
             var request = CreateUserRequestBuilder.Build();
-            request.Email = string.Empty;
+            request.Email = "email";
 
             // Act
-            var result = validator.Validate(request);
+            var result = validator.TestValidate(request);
 
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.Errors.Should().ContainSingle()
-                .And.Contain(e => e.ErrorMessage.Equals("O email do usuário é obrigatório."));
+            // Ass
+            result.ShouldHaveValidationErrorFor(x => x.Email)
+                .WithErrorMessage("O email do usuário deve ser um endereço de email válido.");
         }
 
         [Fact]
-        public void Error_When_Email_Is_Invalid()
+        public void Should_NotHave_ValidationError_When_Email_Is_Valid()
         {
-            // Arrange
+            // Arr
             var validator = new CreateUserValidator();
             var request = CreateUserRequestBuilder.Build();
-            request.Email = "email.com";
 
             // Act
-            var result = validator.Validate(request);
+            var result = validator.TestValidate(request);
 
             // Assert
-            result.IsValid.Should().BeFalse();
-            result.Errors.Should().ContainSingle()
-                .And.Contain(e => e.ErrorMessage.Equals("O email do usuário deve ser um endereço de email válido."));
-        }
-
-        [Fact]
-        public void Error_When_Role_Is_Valid()
-        {
-            // Arrange
-            var validator = new CreateUserValidator();
-            var request = CreateUserRequestBuilder.Build();
-            
-            // Act
-            var result = validator.Validate(request);
-
-            // Assert
-            result.IsValid.Should().BeTrue();
-            
-        }
-
-        [Fact]
-        public void Error_When_Role_Is_Invalid()
-        {
-            // Arrange
-            var validator = new CreateUserValidator();
-            var request = CreateUserRequestBuilder.Build();
-            request.RoleID = 4;
-
-            // Act
-            var result = validator.Validate(request);
-
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.Errors.Should().ContainSingle()
-                .And.Contain(e => e.ErrorMessage.Equals("O tipo do usuário deve ser 1 (Admin), 2 (Technician) ou 3 (User)."));
-
+            result.ShouldNotHaveValidationErrorFor(x => x.Email);
         }
     }
 }
