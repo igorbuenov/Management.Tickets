@@ -6,14 +6,19 @@ namespace CommonTestUtilities.Repositories
 {
     public class UserPasswordHistoryRepositoryBuilder
     {
-        public static IUserPasswordHistoryRepository Build()
+        private readonly Mock<IUserPasswordHistoryRepository> _mock;
+
+        public UserPasswordHistoryRepositoryBuilder()
         {
-            var mock = new Mock<IUserPasswordHistoryRepository>();
+            _mock = new Mock<IUserPasswordHistoryRepository>();
+        }
 
-            mock.Setup(repo => repo.GetAllByUserId(It.IsAny<int>()))
-                .ReturnsAsync(new List<UserPasswordHistory>());
+        public IUserPasswordHistoryRepository Build()
+        {
+            _mock.Setup(r => r.Add(It.IsAny<UserPasswordHistory>()))
+                .Returns(Task.CompletedTask);
 
-            return mock.Object;
+            return _mock.Object;
         }
     }
 }

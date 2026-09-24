@@ -5,13 +5,17 @@ namespace CommonTestUtilities.Repositories
 {
     public class UnitOfWorkBuilder
     {
-        public static IUnitOfWork Build()
+        private readonly Mock<IUnitOfWork> _mock;
+        public UnitOfWorkBuilder()
         {
-            var mock = new Mock<IUnitOfWork>();
+            _mock = new Mock<IUnitOfWork>();
+        }
 
-            mock.Setup(u => u.Commit()).Returns(Task.CompletedTask);
+        public IUnitOfWork Build()
+        {
+            _mock.Setup(u => u.Commit()).Returns(Task.CompletedTask);
 
-            return mock.Object;
+            return _mock.Object;
         }
     }
 }

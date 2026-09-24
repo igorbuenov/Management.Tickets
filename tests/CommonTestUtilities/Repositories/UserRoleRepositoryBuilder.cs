@@ -7,21 +7,21 @@ namespace CommonTestUtilities.Repositories
     public class UserRoleRepositoryBuilder
     {
 
-        private readonly Mock<IUserRoleRepository> _repository;
+        private readonly Mock<IUserRoleRepository> _mock;
 
-        public UserRoleRepositoryBuilder() => _repository = new Mock<IUserRoleRepository>();
+        public UserRoleRepositoryBuilder() => _mock = new Mock<IUserRoleRepository>();
 
         public IUserRoleRepository Build()
         {
-            _repository.Setup(r => r.Add(It.IsAny<int>(), It.IsAny<User>()))
+            _mock.Setup(r => r.Add(It.IsAny<int>(), It.IsAny<User>()))
                 .Returns(Task.CompletedTask);
 
-            return _repository.Object;
+            return _mock.Object;
         }
 
-        public void GetRoleByID()
+        public void RoleExists()
         {
-            _repository.Setup(r => r.GetRoleByID(It.IsAny<int>()))
+            _mock.Setup(r => r.GetRoleByID(It.IsAny<int>()))
                 .ReturnsAsync((int id) =>
                 {
                     return id == 1 || id == 2 || id == 3
@@ -30,9 +30,9 @@ namespace CommonTestUtilities.Repositories
                 });
         }
 
-        public void GetRoleByID(int roleId)
+        public void RoleDoesNotExist(int roleId)
         {
-            _repository.Setup(r => r.GetRoleByID(roleId))
+            _mock.Setup(r => r.GetRoleByID(roleId))
                 .ReturnsAsync((Role?)null);
         }    
     }

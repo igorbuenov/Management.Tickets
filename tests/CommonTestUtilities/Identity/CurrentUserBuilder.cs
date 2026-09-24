@@ -5,11 +5,17 @@ namespace CommonTestUtilities.Identity
 {
     public class CurrentUserBuilder
     {
-        public static ICurrentUser Build()
+        private readonly Mock<ICurrentUser> _mock;
+
+        public CurrentUserBuilder()
         {
-            var mock = new Mock<ICurrentUser>();
-            mock.SetupGet(x => x.UserId).Returns(1);
-            return mock.Object;
+            _mock = new Mock<ICurrentUser>();
+        }
+
+        public ICurrentUser Build()
+        {
+            _mock.SetupGet(x => x.UserId).Returns(1);
+            return _mock.Object;
         }
     }
 }
